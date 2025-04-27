@@ -105,8 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const newValue = Math.min(currentValue + 1, limits[field].max);
                 
                 if (currentValue < limits[field].max) {
-                    clickSound.currentTime = 0; // Reset sound to beginning
-                    playSoundWithFallback(clickSound); // Play iOS click sound
                     hapticFeedback('light');
                     input.value = newValue;
                     valueEl.textContent = newValue;
@@ -132,8 +130,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const newValue = Math.max(currentValue - 1, limits[field].min);
                 
                 if (currentValue > limits[field].min) {
-                    clickSound.currentTime = 0; // Reset sound to beginning
-                    playSoundWithFallback(clickSound); // Play iOS click sound
                     hapticFeedback('light');
                     input.value = newValue;
                     valueEl.textContent = newValue;
@@ -362,7 +358,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load all sounds
     const beepSound = loadAudio('beep.mp3');
     const completeSound = loadAudio('complete.mp3');
-    const clickSound = loadAudio('click.mp3'); // Light switch tap sound
     
     // Additional sound error handling
     function playSoundWithFallback(sound) {
