@@ -338,17 +338,17 @@
         
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 mb-6">
             <div class="space-y-6">
-                <div class="input-container" data-field="action">
-                    <label for="action" class="block text-sm font-medium text-black dark:text-white mb-2">Action Time (seconds)</label>
+                <div class="input-container" data-field="active">
+                    <label for="active" class="block text-sm font-medium text-black dark:text-white mb-2">Active Time (seconds)</label>
                     <div class="ios-stepper">
-                        <button class="stepper-button decrease-button" data-field="action">−</button>
+                        <button class="stepper-button decrease-button" data-field="active">−</button>
                         <div class="stepper-divider"></div>
                         <div class="stepper-value">
-                            <input type="number" inputmode="numeric" pattern="[0-9]*" class="stepper-input" id="action" value="30" min="1" max="300">
-                            <span class="value-display" id="action-value">30</span>
+                            <input type="number" inputmode="numeric" pattern="[0-9]*" class="stepper-input" id="active" value="30" min="1" max="300">
+                            <span class="value-display" id="active-value">30</span>
                         </div>
                         <div class="stepper-divider"></div>
-                        <button class="stepper-button increase-button" data-field="action">+</button>
+                        <button class="stepper-button increase-button" data-field="active">+</button>
                     </div>
                 </div>
                 
@@ -399,21 +399,11 @@
         
         <!-- Proverb Slideshow -->
         <div id="proverbSlideshow" class="p-8 mt-6">
-            <div class="flex items-center">
-                <button id="prevProverb" class="p-2 text-ios-blue dark:text-ios-blue hover:bg-ios-gray5 dark:hover:bg-gray-700 rounded-full transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                </button>
-                <div class="flex-1 px-6">
+            <div class="flex items-center justify-center">
+                <div class="px-6">
                     <p id="proverbText" class="text-xl font-medium text-black dark:text-white text-center mb-3"></p>
                     <p id="proverbMeaning" class="text-sm text-ios-gray dark:text-ios-gray2 text-center italic"></p>
                 </div>
-                <button id="nextProverb" class="p-2 text-ios-blue dark:text-ios-blue hover:bg-ios-gray5 dark:hover:bg-gray-700 rounded-full transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </button>
             </div>
         </div>
     </div>

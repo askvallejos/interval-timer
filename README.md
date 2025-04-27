@@ -5,7 +5,7 @@ A simple, iOS-inspired interval timer for workouts and other timed activities.
 ## Features
 
 - Clean, iOS-style UI
-- Customizable action and rest intervals
+- Customizable active and rest intervals
 - Sound alerts for phase changes
 - Dark mode support
 - Mobile-friendly design

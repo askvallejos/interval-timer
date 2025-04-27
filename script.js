@@ -24,13 +24,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: false });
     
     // DOM Elements
-    const actionInput = document.getElementById('action');
+    const activeInput = document.getElementById('active');
     const restInput = document.getElementById('rest');
     const repsInput = document.getElementById('reps');
-    // const actionValue = document.getElementById('action-value');
+    // const activeValue = document.getElementById('active-value');
     // const restValue = document.getElementById('rest-value');
     // const repsValue = document.getElementById('reps-value');
-    const stepperInputs = [actionInput, restInput, repsInput];
+    const stepperInputs = [activeInput, restInput, repsInput];
     const startBtn = document.getElementById('startBtn');
     const stopBtn = document.getElementById('stopBtn');
     const timerDisplay = document.getElementById('timerDisplay');
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function initIOSSteppers() {
         // Set max and min values for each field
         const limits = {
-            action: { min: 1, max: 300 },
+            active: { min: 1, max: 300 },
             rest: { min: 1, max: 300 },
             reps: { min: 1, max: 30 }
         };
@@ -321,12 +321,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Timer variables
     let timer;
-    let phase = 'countdown'; // countdown, action, rest
+    let phase = 'countdown'; // countdown, active, rest
     let currentRepCount = 0;
     let totalSeconds = 0;
     let secondsRemaining = 0;
     let originalTime = 0;
-    let actionTime, restTime, reps;
+    let activeTime, restTime, reps;
     let totalActiveSeconds = 0;
     let totalRestSeconds = 0;
     
@@ -413,8 +413,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (phase === 'countdown') {
             // For countdown phase, just show the number as is (3, 2, 1)
             timeLeft.textContent = secondsRemaining;
-        } else if (phase === 'action' || phase === 'rest') {
-            // For action and rest phases, show the actual remaining time with a minimum of 1
+        } else if (phase === 'active' || phase === 'rest') {
+            // For active and rest phases, show the actual remaining time with a minimum of 1
             timeLeft.textContent = Math.max(1, secondsRemaining);
         }
         
@@ -429,7 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
         totalSeconds++;
         
         // Track active and rest time separately
-        if (phase === 'action') {
+        if (phase === 'active') {
             totalActiveSeconds++;
         } else if (phase === 'rest') {
             totalRestSeconds++;
@@ -439,9 +439,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (secondsRemaining <= 0) {
             if (phase === 'countdown') {
-                // Start the action phase
-                phase = 'action';
-                countdownPhase.textContent = 'ACTION!';
+                // Start the active phase
+                phase = 'active';
+                countdownPhase.textContent = 'ACTIVE!';
                 countdownPhase.classList.remove('text-black', 'dark:text-white');
                 countdownPhase.classList.add('text-ios-green', 'dark:text-ios-green');
                 timeLeft.classList.remove('text-ios-blue', 'dark:text-ios-blue');
@@ -449,14 +449,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 progressBar.classList.remove('bg-ios-blue', 'dark:bg-ios-blue');
                 progressBar.classList.add('bg-ios-green', 'dark:bg-ios-green');
                 
-                // Set seconds remaining to the action time
-                secondsRemaining = actionTime;
-                originalTime = actionTime;
+                // Set seconds remaining to the active time
+                secondsRemaining = activeTime;
+                originalTime = activeTime;
                 currentRepCount++;
                 playSoundWithFallback(beepSound);
                 hapticFeedback('medium');
                 updateDisplay(); // Update display immediately after changing phase
-            } else if (phase === 'action') {
+            } else if (phase === 'active') {
                 // Start the rest phase
                 phase = 'rest';
                 countdownPhase.textContent = 'REST';
@@ -475,9 +475,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateDisplay(); // Update display immediately after changing phase
             } else if (phase === 'rest') {
                 if (currentRepCount < reps) {
-                    // Start next action phase
-                    phase = 'action';
-                    countdownPhase.textContent = 'ACTION!';
+                    // Start next active phase
+                    phase = 'active';
+                    countdownPhase.textContent = 'ACTIVE!';
                     countdownPhase.classList.remove('text-ios-orange', 'dark:text-ios-orange');
                     countdownPhase.classList.add('text-ios-green', 'dark:text-ios-green');
                     timeLeft.classList.remove('text-ios-orange', 'dark:text-ios-orange');
@@ -485,9 +485,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     progressBar.classList.remove('bg-ios-orange', 'dark:bg-ios-orange');
                     progressBar.classList.add('bg-ios-green', 'dark:bg-ios-green');
                     
-                    // Set seconds remaining to the action time
-                    secondsRemaining = actionTime;
-                    originalTime = actionTime;
+                    // Set seconds remaining to the active time
+                    secondsRemaining = activeTime;
+                    originalTime = activeTime;
                     currentRepCount++;
                     playSoundWithFallback(beepSound);
                     hapticFeedback('medium');
@@ -517,12 +517,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Start the timer
     function startTimer() {
         // Get input values
-        actionTime = parseInt(actionInput.value);
+        activeTime = parseInt(activeInput.value);
         restTime = parseInt(restInput.value);
         reps = parseInt(repsInput.value);
         
         // Validate inputs
-        if (actionTime < 1 || restTime < 1 || reps < 1) {
+        if (activeTime < 1 || restTime < 1 || reps < 1) {
             hapticFeedback('error');
             alert('Please enter valid values (minimum 1)');
             return;
@@ -646,101 +646,84 @@ document.addEventListener('DOMContentLoaded', () => {
     function initProverbSlideshow() {
         const proverbText = document.getElementById('proverbText');
         const proverbMeaning = document.getElementById('proverbMeaning');
-        const prevButton = document.getElementById('prevProverb');
-        const nextButton = document.getElementById('nextProverb');
         const proverbSlideshow = document.getElementById('proverbSlideshow');
         
         let proverbs = [];
         let currentProverbIndex = 0;
         let slideshowInterval;
+        let usedIndexes = [];
         
         // Set initial opacity to 0 for smooth fade-in
         proverbText.style.opacity = '0';
         proverbMeaning.style.opacity = '0';
         
-        // Fetch proverbs from JSON file
-        fetch('public/data/carousel.json')
-            .then(response => {
-                console.log('First fetch attempt response status:', response.status);
-                return response.json();
-            })
-            .then(data => {
-                console.log('JSON data loaded successfully:', data);
-                proverbs = data;
-                displayProverb(currentProverbIndex);
+        // Attempt to load proverbs from file only
+        const loadProverbs = async () => {
+            try {
+                // Try first path
+                const response = await fetch('./public/data/carousel.json');
+                if (!response.ok) throw new Error('First fetch failed');
+                const data = await response.json();
+                console.log('JSON data loaded successfully from first path:', data);
+                return data;
+            } catch (error) {
+                console.error('First fetch attempt failed:', error);
+                try {
+                    // Try second path
+                    const response = await fetch('/public/data/carousel.json');
+                    if (!response.ok) throw new Error('Second fetch failed');
+                    const data = await response.json();
+                    console.log('JSON data loaded successfully from second path:', data);
+                    return data;
+                } catch (error) {
+                    console.error('Second fetch attempt failed:', error);
+                    try {
+                        // Try third path
+                        const response = await fetch('carousel.json');
+                        if (!response.ok) throw new Error('Third fetch failed');
+                        const data = await response.json();
+                        console.log('JSON data loaded successfully from third path:', data);
+                        return data;
+                    } catch (error) {
+                        console.error('All fetch attempts failed:', error);
+                        // Show error in UI
+                        proverbText.textContent = 'No proverbs available.';
+                        proverbMeaning.textContent = 'Could not load proverbs from JSON.';
+                        proverbText.style.opacity = '1';
+                        proverbMeaning.style.opacity = '1';
+                        return [];
+                    }
+                }
+            }
+        };
+        
+        // Load proverbs and initialize display
+        loadProverbs().then(data => {
+            proverbs = data;
+            if (proverbs.length > 0) {
+                displayRandomProverb();
                 startProverbSlideshow();
-            })
-            .catch(error => {
-                console.error('Error loading proverbs:', error);
-                // Try alternative paths
-                console.log('Trying alternative path for carousel.json');
-                fetch('/data/carousel.json')
-                    .then(response => {
-                        console.log('Second fetch attempt response status:', response.status);
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log('JSON data loaded from alternate path:', data);
-                        proverbs = data;
-                        displayProverb(currentProverbIndex);
-                        startProverbSlideshow();
-                    })
-                    .catch(altError => {
-                        console.error('Second attempt failed:', altError);
-                        // Try one more path format
-                        fetch('data/carousel.json')
-                            .then(response => {
-                                console.log('Third fetch attempt response status:', response.status);
-                                return response.json();
-                            })
-                            .then(data => {
-                                console.log('JSON data loaded from third path attempt:', data);
-                                proverbs = data;
-                                displayProverb(currentProverbIndex);
-                                startProverbSlideshow();
-                            })
-                            .catch(finalError => {
-                                console.error('All attempts failed:', finalError);
-                                // Fallback to hardcoded JSON data
-                                console.log('Loading from hardcoded JSON data');
-                                try {
-                                    const hardcodedData = [
-                                        {
-                                          "proverb": "All warfare is based on deception.",
-                                          "meaning": "Victory belongs to those who mislead, surprise, and outthink their enemy."
-                                        },
-                                        {
-                                          "proverb": "Appear weak when you are strong, and strong when you are weak.",
-                                          "meaning": "Confuse your enemies by masking your true strength."
-                                        },
-                                        {
-                                          "proverb": "If you know the enemy and know yourself, you need not fear the result of a hundred battles.",
-                                          "meaning": "True power comes from understanding both your own strengths and your opponent's weaknesses."
-                                        },
-                                        {
-                                          "proverb": "In the midst of chaos, there is also opportunity.",
-                                          "meaning": "When everything falls apart, sharp eyes can still find advantage."
-                                        },
-                                        {
-                                          "proverb": "The greatest victory is that which requires no battle.",
-                                          "meaning": "Winning without fighting — through strategy, alliances, or intimidation — is the highest art."
-                                        }
-                                    ];
-                                    proverbs = hardcodedData;
-                                    console.log('Loaded hardcoded proverbs:', proverbs);
-                                    displayProverb(currentProverbIndex);
-                                    startProverbSlideshow();
-                                } catch (e) {
-                                    console.error('Even hardcoded fallback failed:', e);
-                                    // Final fallback text
-                                    proverbText.textContent = 'Focus on the process, not the outcome.';
-                                    proverbMeaning.textContent = 'Success comes from consistent effort, not fixating on results.';
-                                    proverbText.style.opacity = '1';
-                                    proverbMeaning.style.opacity = '1';
-                                }
-                            });
-                    });
-            });
+            }
+        });
+        
+        // Get a random index that hasn't been used recently
+        function getRandomIndex() {
+            if (proverbs.length <= 1) return 0;
+            
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * proverbs.length);
+            } while (newIndex === currentProverbIndex && proverbs.length > 1);
+            
+            return newIndex;
+        }
+        
+        function displayRandomProverb() {
+            if (proverbs.length === 0) return;
+            
+            currentProverbIndex = getRandomIndex();
+            displayProverb(currentProverbIndex);
+        }
         
         function displayProverb(index) {
             if (proverbs.length === 0) return;
@@ -769,56 +752,10 @@ document.addEventListener('DOMContentLoaded', () => {
             proverbText.style.transition = 'opacity 0.5s ease';
             proverbMeaning.style.transition = 'opacity 0.5s ease';
             
-            // Start the slideshow interval
+            // Start the slideshow interval with random proverbs
             slideshowInterval = setInterval(() => {
-                goToNextProverb();
+                displayRandomProverb();
             }, 10000); // Change every 10 seconds
-        }
-        
-        function goToNextProverb() {
-            currentProverbIndex = (currentProverbIndex + 1) % proverbs.length;
-            displayProverb(currentProverbIndex);
-        }
-        
-        function goToPrevProverb() {
-            currentProverbIndex = (currentProverbIndex - 1 + proverbs.length) % proverbs.length;
-            displayProverb(currentProverbIndex);
-        }
-        
-        // Add event listeners for the navigation buttons
-        if (prevButton && nextButton) {
-            prevButton.addEventListener('click', () => {
-                hapticFeedback('light');
-                goToPrevProverb();
-                // Reset the interval to prevent immediate auto-advance
-                startProverbSlideshow();
-            });
-            
-            nextButton.addEventListener('click', () => {
-                hapticFeedback('light');
-                goToNextProverb();
-                // Reset the interval to prevent immediate auto-advance
-                startProverbSlideshow();
-            });
-            
-            // Add touch events for mobile
-            if ('ontouchstart' in document.documentElement) {
-                prevButton.addEventListener('touchstart', function() {
-                    this.classList.add('active');
-                });
-                
-                prevButton.addEventListener('touchend', function() {
-                    this.classList.remove('active');
-                });
-                
-                nextButton.addEventListener('touchstart', function() {
-                    this.classList.add('active');
-                });
-                
-                nextButton.addEventListener('touchend', function() {
-                    this.classList.remove('active');
-                });
-            }
         }
         
         // Show the slideshow and hide it when timer is active
@@ -828,10 +765,16 @@ document.addEventListener('DOMContentLoaded', () => {
         
         continueBtn.addEventListener('click', () => {
             proverbSlideshow.classList.remove('hidden');
+            // Reset the slideshow when returning to view
+            displayRandomProverb();
+            startProverbSlideshow();
         });
         
         stopBtn.addEventListener('click', () => {
             proverbSlideshow.classList.remove('hidden');
+            // Reset the slideshow when returning to view
+            displayRandomProverb();
+            startProverbSlideshow();
         });
     }
 

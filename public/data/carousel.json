@@ -1,71 +1,12 @@
 [
-    {
-      "proverb": "All warfare is based on deception.",
-      "meaning": "Victory belongs to those who mislead, surprise, and outthink their enemy."
-    },
-    {
-      "proverb": "Appear weak when you are strong, and strong when you are weak.",
-      "meaning": "Confuse your enemies by masking your true strength."
-    },
-    {
-      "proverb": "Victorious warriors win first and then go to war, while defeated warriors go to war first and then seek to win.",
-      "meaning": "Prepare so well that victory is inevitable before the fight even begins."
-    },
-    {
-      "proverb": "If you know the enemy and know yourself, you need not fear the result of a hundred battles.",
-      "meaning": "True power comes from understanding both your own strengths and your opponent's weaknesses."
-    },
-    {
-      "proverb": "In the midst of chaos, there is also opportunity.",
-      "meaning": "When everything falls apart, sharp eyes can still find advantage."
-    },
-    {
-      "proverb": "The greatest victory is that which requires no battle.",
-      "meaning": "Winning without fighting — through strategy, alliances, or intimidation — is the highest art."
-    },
-    {
-      "proverb": "Move swift as the wind and closely-formed as the wood. Attack like the fire and be still as the mountain.",
-      "meaning": "Master all tempos of war — strike fast, stay solid, and be unshakable."
-    },
-    {
-      "proverb": "Opportunities multiply as they are seized.",
-      "meaning": "The more bold moves you take, the more paths to victory will open."
-    },
-    {
-      "proverb": "He who is prudent and lies in wait for an enemy who is not, will be victorious.",
-      "meaning": "Patience and preparation destroy recklessness every time."
-    },
-    {
-      "proverb": "It is better to be feared than loved, if you cannot be both.",
-      "meaning": "Fear is a stronger, more reliable motivator than love when power is at stake."
-    },
-    {
-      "proverb": "The lion cannot protect himself from traps, and the fox cannot defend himself from wolves. One must therefore be a fox to recognize traps, and a lion to frighten wolves.",
-      "meaning": "A leader must be both clever and strong — not just one or the other."
-    },
-    {
-      "proverb": "Never attempt to win by force what can be won by deception.",
-      "meaning": "Cunning often achieves more than brute strength."
-    },
-    {
-      "proverb": "The wise man does at once what the fool does finally.",
-      "meaning": "Swift, decisive action separates winners from losers."
-    },
-    {
-      "proverb": "Men are driven by two principal impulses, either by love or by fear.",
-      "meaning": "Understanding human nature is key to ruling over it."
-    },
-    {
-      "proverb": "He who builds on the people builds on mud.",
-      "meaning": "Power based purely on popularity is unstable and unreliable."
-    },
-    {
-      "proverb": "A prince must imitate the fox and the lion.",
-      "meaning": "Success demands a balance of intelligence and brute force."
-    },
-    {
-      "proverb": "The promise given was a necessity of the past: the word broken is a necessity of the present.",
-      "meaning": "Adapt to current realities, even if it means breaking old promises."
-    }
-  ]
-  
+  {
+    "id": 1,
+    "proverb": "Go beyond, Plus Ultra",
+    "meaning": "Boku no Hero Academia"
+  },
+  {
+    "id": 2,
+    "proverb": "Go beyond, Plus Ultra",
+    "meaning": "Boku no Hero Academia"
+  }
+]
