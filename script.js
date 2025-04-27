@@ -388,7 +388,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update timer display
     function updateDisplay() {
-        timeLeft.textContent = secondsRemaining;
+        // Display the actual time remaining for clearer UX
+        if (phase === 'countdown') {
+            // For countdown phase, just show the number as is (3, 2, 1)
+            timeLeft.textContent = secondsRemaining;
+        } else if (phase === 'action' || phase === 'rest') {
+            // For action and rest phases, show the actual remaining time with a minimum of 1
+            timeLeft.textContent = Math.max(1, secondsRemaining);
+        }
+        
         updateProgress();
         currentRep.textContent = `Rep: ${currentRepCount}/${reps}`;
         totalTime.textContent = `Total: ${formatTime(totalSeconds)}`;
@@ -413,11 +421,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 progressBar.classList.remove('bg-ios-blue', 'dark:bg-ios-blue');
                 progressBar.classList.add('bg-ios-green', 'dark:bg-ios-green');
                 
+                // Set seconds remaining to the action time
                 secondsRemaining = actionTime;
                 originalTime = actionTime;
                 currentRepCount++;
                 playSoundWithFallback(beepSound);
                 hapticFeedback('medium');
+                updateDisplay(); // Update display immediately after changing phase
             } else if (phase === 'action') {
                 // Start the rest phase
                 phase = 'rest';
@@ -429,10 +439,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 progressBar.classList.remove('bg-ios-green', 'dark:bg-ios-green');
                 progressBar.classList.add('bg-ios-orange', 'dark:bg-ios-orange');
                 
+                // Set seconds remaining to the rest time
                 secondsRemaining = restTime;
                 originalTime = restTime;
                 playSoundWithFallback(beepSound);
                 hapticFeedback('medium');
+                updateDisplay(); // Update display immediately after changing phase
             } else if (phase === 'rest') {
                 if (currentRepCount < reps) {
                     // Start next action phase
@@ -445,11 +457,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     progressBar.classList.remove('bg-ios-orange', 'dark:bg-ios-orange');
                     progressBar.classList.add('bg-ios-green', 'dark:bg-ios-green');
                     
+                    // Set seconds remaining to the action time
                     secondsRemaining = actionTime;
                     originalTime = actionTime;
                     currentRepCount++;
                     playSoundWithFallback(beepSound);
                     hapticFeedback('medium');
+                    updateDisplay(); // Update display immediately after changing phase
                 } else {
                     // Workout complete
                     playSoundWithFallback(completeSound);
