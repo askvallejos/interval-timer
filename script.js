@@ -42,9 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const darkModeToggle = document.getElementById('darkModeToggle');
     const sunIcon = document.getElementById('sunIcon');
     const moonIcon = document.getElementById('moonIcon');
-    const fullscreenToggle = document.getElementById('fullscreenToggle');
-    const expandIcon = document.getElementById('expandIcon');
-    const compressIcon = document.getElementById('compressIcon');
     const increaseButtons = document.querySelectorAll('.increase-button');
     const decreaseButtons = document.querySelectorAll('.decrease-button');
     const completionModal = document.getElementById('completionModal');
@@ -322,57 +319,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Dark mode toggle event listener
     darkModeToggle.addEventListener('click', toggleDarkMode);
 
-    // Fullscreen toggle functionality
-    function toggleFullscreen() {
-        hapticFeedback('light');
-        
-        if (!document.fullscreenElement && 
-            !document.webkitFullscreenElement && 
-            !document.mozFullScreenElement) {
-            // Enter fullscreen
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen();
-            } else if (document.documentElement.webkitRequestFullscreen) { // Safari
-                document.documentElement.webkitRequestFullscreen();
-            } else if (document.documentElement.mozRequestFullScreen) { // Firefox
-                document.documentElement.mozRequestFullScreen();
-            }
-            expandIcon.classList.add('hidden');
-            compressIcon.classList.remove('hidden');
-        } else {
-            // Exit fullscreen
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) { // Safari
-                document.webkitExitFullscreen();
-            } else if (document.mozCancelFullScreen) { // Firefox
-                document.mozCancelFullScreen();
-            }
-            expandIcon.classList.remove('hidden');
-            compressIcon.classList.add('hidden');
-        }
-    }
-
-    // Handle fullscreen change events
-    document.addEventListener('fullscreenchange', updateFullscreenButtonIcon);
-    document.addEventListener('webkitfullscreenchange', updateFullscreenButtonIcon);
-    document.addEventListener('mozfullscreenchange', updateFullscreenButtonIcon);
-
-    function updateFullscreenButtonIcon() {
-        if (document.fullscreenElement || 
-            document.webkitFullscreenElement || 
-            document.mozFullScreenElement) {
-            expandIcon.classList.add('hidden');
-            compressIcon.classList.remove('hidden');
-        } else {
-            expandIcon.classList.remove('hidden');
-            compressIcon.classList.add('hidden');
-        }
-    }
-
-    // Fullscreen toggle event listener
-    fullscreenToggle.addEventListener('click', toggleFullscreen);
-
     // Timer variables
     let timer;
     let phase = 'countdown'; // countdown, action, rest
@@ -390,10 +336,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Try different possible paths
         const paths = [
+            `/sounds/${filename}`,           // Netlify often serves from root
+            `sounds/${filename}`,            // Relative without public
             `/public/sounds/${filename}`,    // Absolute path from root
             `./public/sounds/${filename}`,   // Relative path from current directory
-            `/sounds/${filename}`,           // Netlify often serves from root
-            `sounds/${filename}`             // Relative without public
+            filename                         // Just the filename as fallback
         ];
         
         // Try to load the first path
@@ -423,14 +370,26 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Additional sound error handling
     function playSoundWithFallback(sound) {
+        // For mobile Safari, we need to play sounds in response to a user gesture
+        if (!sound.paused) {
+            sound.pause();
+            sound.currentTime = 0;
+        }
+        
         const playPromise = sound.play();
         
         if (playPromise !== undefined) {
             playPromise.catch(error => {
                 console.error('Error playing sound:', error);
-                // Reload and try again
+                // Reload and try again with user interaction context
                 sound.load();
-                sound.play().catch(err => console.error('Second attempt failed:', err));
+                
+                // Create a short timeout to help with mobile browser restrictions
+                setTimeout(() => {
+                    sound.play().catch(err => {
+                        console.error('Second attempt failed:', err);
+                    });
+                }, 100);
             });
         }
     }
@@ -635,6 +594,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if ('ontouchstart' in document.documentElement) {
         startBtn.addEventListener('touchstart', function() {
             this.classList.add('active');
+            // Preload sounds for mobile
+            beepSound.load();
+            completeSound.load();
         });
         
         startBtn.addEventListener('touchend', function() {
@@ -676,15 +638,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         continueBtn.addEventListener('touchend', function() {
-            this.classList.remove('active');
-        });
-        
-        // Add touch event for fullscreen button
-        fullscreenToggle.addEventListener('touchstart', function() {
-            this.classList.add('active');
-        });
-        
-        fullscreenToggle.addEventListener('touchend', function() {
             this.classList.remove('active');
         });
     }
