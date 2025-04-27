@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Interval Timer">
+    <title>Interval Timer</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMzYjgyZjYiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM4YjVjZjYiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjEyOCIgZmlsbD0idXJsKCNhKSIvPjxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMTYwIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMjQiIHN0cm9rZS1kYXNoYXJyYXk9IjEwMCAxMDAiIHN0cm9rZS1kYXNob2Zmc2V0PSIyNSIvPjxwYXRoIGQ9Ik0yNTYgMTY1djkxbDY0IDY0IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMzYjgyZjYiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM4YjVjZjYiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjEyOCIgZmlsbD0idXJsKCNhKSIvPjxjaXJjbGUgY3g9IjI1NiIgY3k9IjI1NiIgcj0iMTYwIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMjQiIHN0cm9rZS1kYXNoYXJyYXk9IjEwMCAxMDAiIHN0cm9rZS1kYXNob2Zmc2V0PSIyNSIvPjxwYXRoIGQ9Ik0yNTYgMTY1djkxbDY0IDY0IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sf': ['-apple-system', 'BlinkMacSystemFont', 'San Francisco', 'Helvetica Neue', 'Helvetica', 'sans-serif'],
+                    },
+                    colors: {
+                        // iOS System Colors
+                        'ios-red': '#ff3b30',
+                        'ios-orange': '#ff9500',
+                        'ios-yellow': '#ffcc00',
+                        'ios-green': '#34c759',
+                        'ios-mint': '#00c7be',
+                        'ios-teal': '#30b0c7',
+                        'ios-cyan': '#32ade6',
+                        'ios-blue': '#007aff',
+                        'ios-indigo': '#5856d6',
+                        'ios-purple': '#af52de',
+                        'ios-pink': '#ff2d55',
+                        'ios-brown': '#a2845e',
+                        // iOS Gray Colors
+                        'ios-gray': '#8e8e93',
+                        'ios-gray2': '#aeaeb2',
+                        'ios-gray3': '#c7c7cc',
+                        'ios-gray4': '#d1d1d6',
+                        'ios-gray5': '#e5e5ea',
+                        'ios-gray6': '#f2f2f7',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* iOS-style number picker */
+        .ios-picker-container {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(248, 248, 248, 0.92);
+            backdrop-filter: blur(10px);
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            z-index: 50;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .ios-picker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .ios-picker-container {
+            background-color: rgba(28, 28, 30, 0.92);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .ios-picker {
+            height: 220px;
+            overflow: auto;
+            scroll-snap-type: y mandatory;
+            text-align: center;
+            padding: 90px 0;
+            -webkit-overflow-scrolling: touch;
+            position: relative;
+            font-size: 22px;
+        }
+        
+        .ios-picker:before, .ios-picker:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            z-index: 2;
+            pointer-events: none;
+        }
+        
+        .ios-picker:before {
+            top: 0;
+            height: 90px;
+            background: linear-gradient(to bottom, rgba(248, 248, 248, 1) 30%, rgba(248, 248, 248, 0));
+        }
+        
+        .ios-picker:after {
+            bottom: 0;
+            height: 90px;
+            background: linear-gradient(to top, rgba(248, 248, 248, 1) 30%, rgba(248, 248, 248, 0));
+        }
+        
+        .dark .ios-picker:before {
+            background: linear-gradient(to bottom, rgba(28, 28, 30, 1) 30%, rgba(28, 28, 30, 0));
+        }
+        
+        .dark .ios-picker:after {
+            background: linear-gradient(to top, rgba(28, 28, 30, 1) 30%, rgba(28, 28, 30, 0));
+        }
+        
+        .ios-picker-selection-indicator {
+            position: absolute;
+            left: 20%;
+            right: 20%;
+            top: 50%;
+            height: 40px;
+            transform: translateY(-50%);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .dark .ios-picker-selection-indicator {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .ios-picker-item {
+            scroll-snap-align: center;
+            height: 40px;
+            line-height: 40px;
+            color: #000;
+            opacity: 0.4;
+            transition: opacity 0.2s;
+        }
+        
+        .dark .ios-picker-item {
+            color: #fff;
+        }
+        
+        .ios-picker-item.selected {
+            opacity: 1;
+            font-weight: 500;
+            font-size: 24px;
+        }
+        
+        /* iOS style overrides */
+        input, button {
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        /* Hide default number input spinners/arrows */
+        input[type="number"]::-webkit-inner-spin-button, 
+        input[type="number"]::-webkit-outer-spin-button { 
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 0; 
+        }
+        
+        input[type="number"] {
+            -moz-appearance: textfield; /* Firefox */
+        }
+        
+        /* iOS stepper control */
+        .ios-stepper {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 44px;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #f2f2f7; /* iOS gray6 */
+            font-size: 20px;
+        }
+        
+        .dark .ios-stepper {
+            background-color: #1c1c1e; /* iOS Dark background */
+        }
+        
+        .stepper-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: transparent;
+            border: none;
+            color: #007aff; /* iOS blue */
+            font-size: 22px;
+            font-weight: 300;
+            outline: none;
+            position: relative;
+        }
+        
+        .stepper-button:active {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .stepper-button:active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .stepper-button:disabled {
+            color: rgba(0, 122, 255, 0.3); /* iOS blue with opacity */
+        }
+        
+        .stepper-divider {
+            width: 1px;
+            height: 36px;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .stepper-divider {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .stepper-value {
+            flex: 1;
+            text-align: center;
+            font-weight: 500;
+            color: #000;
+            position: relative;
+        }
+        
+        .dark .stepper-value {
+            color: #fff;
+        }
+        
+        .stepper-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 500;
+            color: inherit;
+            font-family: inherit;
+            opacity: 0;
+            z-index: 1;
+            cursor: pointer;
+        }
+        
+        .stepper-input:focus {
+            opacity: 1;
+            outline: none;
+        }
+        
+        .stepper-input:focus + .value-display {
+            opacity: 0;
+        }
+        
+        .value-display {
+            transition: opacity 0.15s ease;
+        }
+        
+        @media (max-width: 640px) {
+            .input-container {
+                cursor: pointer;
+            }
+        }
+
+        /* Disable pull-to-refresh on iOS */
+        html, body {
+            overscroll-behavior-y: none;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* iOS-style button active state */
+        button.active {
+            transform: scale(0.97);
+            opacity: 0.9;
+        }
+        
+        /* iOS header buttons styling */
+        .ios-picker-header button {
+            font-size: 17px;
+            font-weight: 400;
+            padding: 4px 8px;
+            background: transparent;
+            border-radius: 8px;
+            color: #007aff; /* iOS blue */
+        }
+        
+        .ios-picker-header button:active {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .dark .ios-picker-header button:active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* iOS transitions */
+        button {
+            transition: transform 0.1s ease, opacity 0.1s ease, background-color 0.2s ease;
+        }
+    </style>
+</head>
+<body class="bg-ios-gray6 dark:bg-black min-h-screen font-sf transition-colors duration-200">
+    <div class="container mx-auto px-4 py-8 max-w-md">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-semibold text-black dark:text-white">Interval Timer</h1>
+            <button id="darkModeToggle" class="p-2 rounded-full bg-ios-gray5 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+            </button>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 mb-6">
+            <div class="space-y-6">
+                <div class="input-container" data-field="action">
+                    <label for="action" class="block text-sm font-medium text-black dark:text-white mb-2">Action Time (seconds)</label>
+                    <div class="ios-stepper">
+                        <button class="stepper-button decrease-button" data-field="action">−</button>
+                        <div class="stepper-divider"></div>
+                        <div class="stepper-value">
+                            <input type="number" inputmode="numeric" pattern="[0-9]*" class="stepper-input" id="action" value="30" min="1" max="300">
+                            <span class="value-display" id="action-value">30</span>
+                        </div>
+                        <div class="stepper-divider"></div>
+                        <button class="stepper-button increase-button" data-field="action">+</button>
+                    </div>
+                </div>
+                
+                <div class="input-container" data-field="rest">
+                    <label for="rest" class="block text-sm font-medium text-black dark:text-white mb-2">Rest Time (seconds)</label>
+                    <div class="ios-stepper">
+                        <button class="stepper-button decrease-button" data-field="rest">−</button>
+                        <div class="stepper-divider"></div>
+                        <div class="stepper-value">
+                            <input type="number" inputmode="numeric" pattern="[0-9]*" class="stepper-input" id="rest" value="10" min="1" max="300">
+                            <span class="value-display" id="rest-value">10</span>
+                        </div>
+                        <div class="stepper-divider"></div>
+                        <button class="stepper-button increase-button" data-field="rest">+</button>
+                    </div>
+                </div>
+                
+                <div class="input-container" data-field="reps">
+                    <label for="reps" class="block text-sm font-medium text-black dark:text-white mb-2">Repetitions</label>
+                    <div class="ios-stepper">
+                        <button class="stepper-button decrease-button" data-field="reps">−</button>
+                        <div class="stepper-divider"></div>
+                        <div class="stepper-value">
+                            <input type="number" inputmode="numeric" pattern="[0-9]*" class="stepper-input" id="reps" value="5" min="1" max="30">
+                            <span class="value-display" id="reps-value">5</span>
+                        </div>
+                        <div class="stepper-divider"></div>
+                        <button class="stepper-button increase-button" data-field="reps">+</button>
+                    </div>
+                </div>
+                
+                <button id="startBtn" class="w-full bg-ios-blue hover:bg-ios-blue/90 text-white font-semibold py-3 px-4 rounded-xl transition duration-200">Start Timer</button>
+            </div>
+        </div>
+        
+        <div id="timerDisplay" class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 text-center hidden">
+            <div id="countdownPhase" class="text-2xl font-bold text-black dark:text-white mb-2">Get Ready!</div>
+            <div id="timeLeft" class="text-8xl font-bold text-ios-blue dark:text-ios-blue mb-6">3</div>
+            <div id="progress" class="w-full bg-ios-gray5 dark:bg-gray-700 rounded-full h-2 mb-6">
+                <div id="progressBar" class="bg-ios-blue dark:bg-ios-blue h-2 rounded-full" style="width: 0%"></div>
+            </div>
+            <div class="flex justify-between text-sm text-ios-gray dark:text-ios-gray2 mb-8">
+                <span id="currentRep">Rep: 0/0</span>
+                <span id="totalTime">Total: 00:00</span>
+            </div>
+            <button id="stopBtn" class="w-full bg-ios-red hover:bg-ios-red/90 text-white font-semibold py-3 px-4 rounded-xl transition duration-200">Stop</button>
+        </div>
+    </div>
+    
+    <!-- iOS Number Picker -->
+    <div id="iosPicker" class="ios-picker-container">
+        <div class="ios-picker-header">
+            <button id="cancelPicker" class="text-blue-500 font-medium">Cancel</button>
+            <span id="pickerTitle" class="font-medium text-base">Select Value</span>
+            <button id="donePicker" class="text-blue-500 font-medium">Done</button>
+        </div>
+        <div class="relative">
+            <div id="pickerContent" class="ios-picker">
+                <!-- Will be populated dynamically -->
+            </div>
+            <div class="ios-picker-selection-indicator"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
