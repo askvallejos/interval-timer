@@ -1,4 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Prevent zoom and scroll
+    document.addEventListener('touchmove', function(e) {
+        if (e.touches.length > 1) {
+            e.preventDefault(); // Prevent pinch zoom
+        }
+    }, { passive: false });
+    
+    document.addEventListener('wheel', function(e) {
+        if (e.ctrlKey) {
+            e.preventDefault(); // Prevent ctrl+wheel zoom
+        }
+    }, { passive: false });
+    
+    // Handle double-tap zooming
+    let lastTapTime = 0;
+    document.addEventListener('touchend', function(e) {
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTapTime;
+        if (tapLength < 500 && tapLength > 0) {
+            e.preventDefault(); // Prevent double-tap zoom
+        }
+        lastTapTime = currentTime;
+    }, { passive: false });
+    
     // DOM Elements
     const actionInput = document.getElementById('action');
     const restInput = document.getElementById('rest');
@@ -302,16 +326,44 @@ document.addEventListener('DOMContentLoaded', () => {
     let originalTime = 0;
     let actionTime, restTime, reps;
     
-    // Sound effects - preload sounds
-    const beepSound = new Audio('./public/sounds/beep.mp3');
-    const completeSound = new Audio('./public/sounds/complete.mp3');
-    const clickSound = new Audio('./public/sounds/click.mp3'); // Light switch tap sound
+    // Sound effects - try different path structures for Netlify compatibility
+    function loadAudio(filename) {
+        const audio = new Audio();
+        
+        // Try different possible paths
+        const paths = [
+            `/public/sounds/${filename}`,    // Absolute path from root
+            `./public/sounds/${filename}`,   // Relative path from current directory
+            `/sounds/${filename}`,           // Netlify often serves from root
+            `sounds/${filename}`             // Relative without public
+        ];
+        
+        // Try to load the first path
+        audio.src = paths[0];
+        
+        // Set up error handler to try alternate paths
+        let pathIndex = 0;
+        audio.addEventListener('error', function handleAudioError() {
+            pathIndex++;
+            console.log(`Trying alternative path for ${filename}: ${paths[pathIndex]}`);
+            
+            if (pathIndex < paths.length) {
+                audio.src = paths[pathIndex];
+            } else {
+                console.error(`Failed to load sound: ${filename}`);
+                // Remove the error handler to prevent infinite loop
+                audio.removeEventListener('error', handleAudioError);
+            }
+        });
+        
+        return audio;
+    }
     
-    // Preload sounds
-    beepSound.load();
-    completeSound.load();
-    clickSound.load();
-
+    // Load all sounds
+    const beepSound = loadAudio('beep.mp3');
+    const completeSound = loadAudio('complete.mp3');
+    const clickSound = loadAudio('click.mp3'); // Light switch tap sound
+    
     // Additional sound error handling
     function playSoundWithFallback(sound) {
         const playPromise = sound.play();

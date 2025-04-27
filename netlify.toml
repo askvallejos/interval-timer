@@ -1,0 +1,10 @@
+[[headers]]
+  for = "/public/sounds/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000"
+    Content-Type = "audio/mpeg"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200 
