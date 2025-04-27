@@ -44,6 +44,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const moonIcon = document.getElementById('moonIcon');
     const increaseButtons = document.querySelectorAll('.increase-button');
     const decreaseButtons = document.querySelectorAll('.decrease-button');
+    const completionModal = document.getElementById('completionModal');
+    const completionReps = document.getElementById('completionReps');
+    const completionTime = document.getElementById('completionTime');
+    const completionActiveTime = document.getElementById('completionActiveTime');
+    const completionRestTime = document.getElementById('completionRestTime');
+    const continueBtn = document.getElementById('continueBtn');
     
     // iOS Picker Elements (keep for future reference)
     // const iosPicker = document.getElementById('iosPicker');
@@ -321,6 +327,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let secondsRemaining = 0;
     let originalTime = 0;
     let actionTime, restTime, reps;
+    let totalActiveSeconds = 0;
+    let totalRestSeconds = 0;
     
     // Sound effects - try different path structures for Netlify compatibility
     function loadAudio(filename) {
@@ -407,6 +415,13 @@ document.addEventListener('DOMContentLoaded', () => {
         secondsRemaining--;
         totalSeconds++;
         
+        // Track active and rest time separately
+        if (phase === 'action') {
+            totalActiveSeconds++;
+        } else if (phase === 'rest') {
+            totalRestSeconds++;
+        }
+        
         updateDisplay();
         
         if (secondsRemaining <= 0) {
@@ -469,10 +484,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     playSoundWithFallback(completeSound);
                     hapticFeedback('success');
                     stopTimer();
-                    countdownPhase.textContent = 'COMPLETE!';
-                    countdownPhase.classList.remove('text-ios-orange', 'dark:text-ios-orange');
-                    countdownPhase.classList.add('text-ios-blue', 'dark:text-ios-blue');
-                    timeLeft.textContent = '🎉';
+                    
+                    // Update completion modal with stats
+                    completionReps.textContent = reps;
+                    completionTime.textContent = formatTime(totalSeconds);
+                    completionActiveTime.textContent = formatTime(totalActiveSeconds);
+                    completionRestTime.textContent = formatTime(totalRestSeconds);
+                    
+                    // Show completion modal
+                    completionModal.classList.remove('hidden');
+                    
                     return;
                 }
             }
@@ -509,6 +530,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         currentRepCount = 0;
         totalSeconds = 0;
+        totalActiveSeconds = 0;
+        totalRestSeconds = 0;
         secondsRemaining = 3; // Countdown from 3
         originalTime = 3;
         
@@ -521,14 +544,38 @@ document.addEventListener('DOMContentLoaded', () => {
     // Stop the timer
     function stopTimer() {
         clearInterval(timer);
-        startBtn.parentElement.parentElement.classList.remove('hidden');
-        timerDisplay.classList.add('hidden');
+        
+        // Check if this was a normal stop (button press) or completion
+        if (!completionModal.classList.contains('hidden')) {
+            // Timer completed naturally, modal is showing
+            // Do not show the input form until Continue is pressed
+        } else {
+            // Normal stop - show input form immediately
+            startBtn.parentElement.parentElement.classList.remove('hidden');
+            timerDisplay.classList.add('hidden');
+        }
+        
         hapticFeedback('medium');
     }
 
     // Event listeners
     startBtn.addEventListener('click', startTimer);
     stopBtn.addEventListener('click', stopTimer);
+    
+    // Continue button event listener
+    continueBtn.addEventListener('click', () => {
+        hapticFeedback('medium');
+        completionModal.classList.add('hidden');
+        startBtn.parentElement.parentElement.classList.remove('hidden');
+        
+        // Reset the timer display for next use
+        countdownPhase.textContent = 'Get Ready!';
+        countdownPhase.className = 'text-2xl font-bold text-black dark:text-white mb-2';
+        timeLeft.className = 'text-8xl font-bold text-ios-blue dark:text-ios-blue mb-6';
+        timeLeft.textContent = '3';
+        progressBar.className = 'bg-ios-blue dark:bg-ios-blue h-2 rounded-full';
+        progressBar.style.width = '0%';
+    });
     
     // Add iOS-specific quick-tap event listener
     if ('ontouchstart' in document.documentElement) {
@@ -567,6 +614,15 @@ document.addEventListener('DOMContentLoaded', () => {
             button.addEventListener('touchend', function() {
                 this.classList.remove('active');
             });
+        });
+        
+        // Add touch event for continue button
+        continueBtn.addEventListener('touchstart', function() {
+            this.classList.add('active');
+        });
+        
+        continueBtn.addEventListener('touchend', function() {
+            this.classList.remove('active');
         });
     }
 }); 

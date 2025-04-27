@@ -412,6 +412,38 @@
             <div class="ios-picker-selection-indicator"></div>
         </div>
     </div>
+    
+    <!-- Completion Modal -->
+    <div id="completionModal" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 backdrop-blur-sm hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 text-center max-w-md mx-4 w-full">
+            <div class="mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-ios-green dark:text-ios-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-black dark:text-white mb-2">Workout Complete!</h2>
+            <p class="text-ios-gray dark:text-ios-gray2 mb-6">Great job! You've completed your interval workout.</p>
+            <div id="completionStats" class="bg-ios-gray6 dark:bg-gray-700 rounded-xl p-4 mb-6">
+                <div class="flex justify-between mb-2">
+                    <span class="text-black dark:text-white">Repetitions:</span>
+                    <span id="completionReps" class="font-semibold text-black dark:text-white">0</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="text-black dark:text-white">Total Time:</span>
+                    <span id="completionTime" class="font-semibold text-black dark:text-white">00:00</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="text-black dark:text-white">Total Active:</span>
+                    <span id="completionActiveTime" class="font-semibold text-ios-green dark:text-ios-green">00:00</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-black dark:text-white">Total Rest:</span>
+                    <span id="completionRestTime" class="font-semibold text-ios-orange dark:text-ios-orange">00:00</span>
+                </div>
+            </div>
+            <button id="continueBtn" class="w-full bg-ios-blue hover:bg-ios-blue/90 text-white font-semibold py-3 px-4 rounded-xl transition duration-200">Continue</button>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
