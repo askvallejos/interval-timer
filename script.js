@@ -42,6 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const darkModeToggle = document.getElementById('darkModeToggle');
     const sunIcon = document.getElementById('sunIcon');
     const moonIcon = document.getElementById('moonIcon');
+    const fullscreenToggle = document.getElementById('fullscreenToggle');
+    const expandIcon = document.getElementById('expandIcon');
+    const compressIcon = document.getElementById('compressIcon');
     const increaseButtons = document.querySelectorAll('.increase-button');
     const decreaseButtons = document.querySelectorAll('.decrease-button');
     const completionModal = document.getElementById('completionModal');
@@ -318,6 +321,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Dark mode toggle event listener
     darkModeToggle.addEventListener('click', toggleDarkMode);
+
+    // Fullscreen toggle functionality
+    function toggleFullscreen() {
+        hapticFeedback('light');
+        
+        if (!document.fullscreenElement && 
+            !document.webkitFullscreenElement && 
+            !document.mozFullScreenElement) {
+            // Enter fullscreen
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.webkitRequestFullscreen) { // Safari
+                document.documentElement.webkitRequestFullscreen();
+            } else if (document.documentElement.mozRequestFullScreen) { // Firefox
+                document.documentElement.mozRequestFullScreen();
+            }
+            expandIcon.classList.add('hidden');
+            compressIcon.classList.remove('hidden');
+        } else {
+            // Exit fullscreen
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) { // Safari
+                document.webkitExitFullscreen();
+            } else if (document.mozCancelFullScreen) { // Firefox
+                document.mozCancelFullScreen();
+            }
+            expandIcon.classList.remove('hidden');
+            compressIcon.classList.add('hidden');
+        }
+    }
+
+    // Handle fullscreen change events
+    document.addEventListener('fullscreenchange', updateFullscreenButtonIcon);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenButtonIcon);
+    document.addEventListener('mozfullscreenchange', updateFullscreenButtonIcon);
+
+    function updateFullscreenButtonIcon() {
+        if (document.fullscreenElement || 
+            document.webkitFullscreenElement || 
+            document.mozFullScreenElement) {
+            expandIcon.classList.add('hidden');
+            compressIcon.classList.remove('hidden');
+        } else {
+            expandIcon.classList.remove('hidden');
+            compressIcon.classList.add('hidden');
+        }
+    }
+
+    // Fullscreen toggle event listener
+    fullscreenToggle.addEventListener('click', toggleFullscreen);
 
     // Timer variables
     let timer;
@@ -622,6 +676,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         continueBtn.addEventListener('touchend', function() {
+            this.classList.remove('active');
+        });
+        
+        // Add touch event for fullscreen button
+        fullscreenToggle.addEventListener('touchstart', function() {
+            this.classList.add('active');
+        });
+        
+        fullscreenToggle.addEventListener('touchend', function() {
             this.classList.remove('active');
         });
     }
