@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (currentValue < limits[field].max) {
                     clickSound.currentTime = 0; // Reset sound to beginning
-                    clickSound.play(); // Play iOS click sound
+                    playSoundWithFallback(clickSound); // Play iOS click sound
                     hapticFeedback('light');
                     input.value = newValue;
                     valueEl.textContent = newValue;
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (currentValue > limits[field].min) {
                     clickSound.currentTime = 0; // Reset sound to beginning
-                    clickSound.play(); // Play iOS click sound
+                    playSoundWithFallback(clickSound); // Play iOS click sound
                     hapticFeedback('light');
                     input.value = newValue;
                     valueEl.textContent = newValue;
@@ -303,14 +303,28 @@ document.addEventListener('DOMContentLoaded', () => {
     let actionTime, restTime, reps;
     
     // Sound effects - preload sounds
-    const beepSound = new Audio('https://assets.mixkit.co/active_storage/sfx/1082/1082-preview.mp3');
-    const completeSound = new Audio('https://assets.mixkit.co/active_storage/sfx/952/952-preview.mp3');
-    const clickSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2585/2585-preview.mp3'); // Light switch tap sound
+    const beepSound = new Audio('./public/sounds/beep.mp3');
+    const completeSound = new Audio('./public/sounds/complete.mp3');
+    const clickSound = new Audio('./public/sounds/click.mp3'); // Light switch tap sound
     
     // Preload sounds
     beepSound.load();
     completeSound.load();
     clickSound.load();
+
+    // Additional sound error handling
+    function playSoundWithFallback(sound) {
+        const playPromise = sound.play();
+        
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.error('Error playing sound:', error);
+                // Reload and try again
+                sound.load();
+                sound.play().catch(err => console.error('Second attempt failed:', err));
+            });
+        }
+    }
 
     // Format time as MM:SS
     function formatTime(seconds) {
@@ -355,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 secondsRemaining = actionTime;
                 originalTime = actionTime;
                 currentRepCount++;
-                beepSound.play();
+                playSoundWithFallback(beepSound);
                 hapticFeedback('medium');
             } else if (phase === 'action') {
                 // Start the rest phase
@@ -370,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 secondsRemaining = restTime;
                 originalTime = restTime;
-                beepSound.play();
+                playSoundWithFallback(beepSound);
                 hapticFeedback('medium');
             } else if (phase === 'rest') {
                 if (currentRepCount < reps) {
@@ -387,11 +401,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     secondsRemaining = actionTime;
                     originalTime = actionTime;
                     currentRepCount++;
-                    beepSound.play();
+                    playSoundWithFallback(beepSound);
                     hapticFeedback('medium');
                 } else {
                     // Workout complete
-                    completeSound.play();
+                    playSoundWithFallback(completeSound);
                     hapticFeedback('success');
                     stopTimer();
                     countdownPhase.textContent = 'COMPLETE!';
