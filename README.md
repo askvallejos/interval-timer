@@ -34,4 +34,4 @@ A simple interval timer web application built with HTML, JavaScript, and Tailwin
 
 - `index.html` - Main HTML file with the UI structure
 - `script.js` - JavaScript code for timer functionality
-- `README.md` - Project documentation 
+- `README.md` - Project documentation # interval-timer
