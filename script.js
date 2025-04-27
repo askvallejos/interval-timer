@@ -426,7 +426,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (phase === "countdown") {
         // Start the active phase
         phase = "active";
-        countdownPhase.textContent = "ACTIVE!";
+        countdownPhase.textContent = "ACTIVE";
         countdownPhase.classList.remove("text-black", "dark:text-white");
         countdownPhase.classList.add("text-ios-green", "dark:text-ios-green");
         timeLeft.classList.remove("text-ios-blue", "dark:text-ios-blue");
@@ -465,7 +465,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (currentRepCount < reps) {
           // Start next active phase
           phase = "active";
-          countdownPhase.textContent = "ACTIVE!";
+          countdownPhase.textContent = "ACTIVE";
           countdownPhase.classList.remove(
             "text-ios-orange",
             "dark:text-ios-orange"
