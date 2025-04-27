@@ -396,6 +396,26 @@
             </div>
             <button id="stopBtn" class="w-full bg-ios-red hover:bg-ios-red/90 text-white font-semibold py-3 px-4 rounded-xl transition duration-200">Stop</button>
         </div>
+        
+        <!-- Proverb Slideshow -->
+        <div id="proverbSlideshow" class="p-8 mt-6">
+            <div class="flex items-center">
+                <button id="prevProverb" class="p-2 text-ios-blue dark:text-ios-blue hover:bg-ios-gray5 dark:hover:bg-gray-700 rounded-full transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <div class="flex-1 px-6">
+                    <p id="proverbText" class="text-xl font-medium text-black dark:text-white text-center mb-3"></p>
+                    <p id="proverbMeaning" class="text-sm text-ios-gray dark:text-ios-gray2 text-center italic"></p>
+                </div>
+                <button id="nextProverb" class="p-2 text-ios-blue dark:text-ios-blue hover:bg-ios-gray5 dark:hover:bg-gray-700 rounded-full transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
+        </div>
     </div>
     
     <!-- iOS Number Picker -->

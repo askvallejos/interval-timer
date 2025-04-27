@@ -641,4 +641,209 @@ document.addEventListener('DOMContentLoaded', () => {
             this.classList.remove('active');
         });
     }
+
+    // Proverb Slideshow Functionality
+    function initProverbSlideshow() {
+        const proverbText = document.getElementById('proverbText');
+        const proverbMeaning = document.getElementById('proverbMeaning');
+        const prevButton = document.getElementById('prevProverb');
+        const nextButton = document.getElementById('nextProverb');
+        const proverbSlideshow = document.getElementById('proverbSlideshow');
+        
+        let proverbs = [];
+        let currentProverbIndex = 0;
+        let slideshowInterval;
+        
+        // Set initial opacity to 0 for smooth fade-in
+        proverbText.style.opacity = '0';
+        proverbMeaning.style.opacity = '0';
+        
+        // Fetch proverbs from JSON file
+        fetch('public/data/carousel.json')
+            .then(response => {
+                console.log('First fetch attempt response status:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('JSON data loaded successfully:', data);
+                proverbs = data;
+                displayProverb(currentProverbIndex);
+                startProverbSlideshow();
+            })
+            .catch(error => {
+                console.error('Error loading proverbs:', error);
+                // Try alternative paths
+                console.log('Trying alternative path for carousel.json');
+                fetch('/data/carousel.json')
+                    .then(response => {
+                        console.log('Second fetch attempt response status:', response.status);
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('JSON data loaded from alternate path:', data);
+                        proverbs = data;
+                        displayProverb(currentProverbIndex);
+                        startProverbSlideshow();
+                    })
+                    .catch(altError => {
+                        console.error('Second attempt failed:', altError);
+                        // Try one more path format
+                        fetch('data/carousel.json')
+                            .then(response => {
+                                console.log('Third fetch attempt response status:', response.status);
+                                return response.json();
+                            })
+                            .then(data => {
+                                console.log('JSON data loaded from third path attempt:', data);
+                                proverbs = data;
+                                displayProverb(currentProverbIndex);
+                                startProverbSlideshow();
+                            })
+                            .catch(finalError => {
+                                console.error('All attempts failed:', finalError);
+                                // Fallback to hardcoded JSON data
+                                console.log('Loading from hardcoded JSON data');
+                                try {
+                                    const hardcodedData = [
+                                        {
+                                          "proverb": "All warfare is based on deception.",
+                                          "meaning": "Victory belongs to those who mislead, surprise, and outthink their enemy."
+                                        },
+                                        {
+                                          "proverb": "Appear weak when you are strong, and strong when you are weak.",
+                                          "meaning": "Confuse your enemies by masking your true strength."
+                                        },
+                                        {
+                                          "proverb": "If you know the enemy and know yourself, you need not fear the result of a hundred battles.",
+                                          "meaning": "True power comes from understanding both your own strengths and your opponent's weaknesses."
+                                        },
+                                        {
+                                          "proverb": "In the midst of chaos, there is also opportunity.",
+                                          "meaning": "When everything falls apart, sharp eyes can still find advantage."
+                                        },
+                                        {
+                                          "proverb": "The greatest victory is that which requires no battle.",
+                                          "meaning": "Winning without fighting — through strategy, alliances, or intimidation — is the highest art."
+                                        }
+                                    ];
+                                    proverbs = hardcodedData;
+                                    console.log('Loaded hardcoded proverbs:', proverbs);
+                                    displayProverb(currentProverbIndex);
+                                    startProverbSlideshow();
+                                } catch (e) {
+                                    console.error('Even hardcoded fallback failed:', e);
+                                    // Final fallback text
+                                    proverbText.textContent = 'Focus on the process, not the outcome.';
+                                    proverbMeaning.textContent = 'Success comes from consistent effort, not fixating on results.';
+                                    proverbText.style.opacity = '1';
+                                    proverbMeaning.style.opacity = '1';
+                                }
+                            });
+                    });
+            });
+        
+        function displayProverb(index) {
+            if (proverbs.length === 0) return;
+            
+            const proverb = proverbs[index];
+            
+            // Add fade-out effect
+            proverbText.style.opacity = '0';
+            proverbMeaning.style.opacity = '0';
+            
+            setTimeout(() => {
+                proverbText.textContent = proverb.proverb;
+                proverbMeaning.textContent = proverb.meaning;
+                
+                // Add fade-in effect
+                proverbText.style.opacity = '1';
+                proverbMeaning.style.opacity = '1';
+            }, 500);
+        }
+        
+        function startProverbSlideshow() {
+            // Clear any existing interval
+            if (slideshowInterval) clearInterval(slideshowInterval);
+            
+            // Apply transition style for smooth opacity changes
+            proverbText.style.transition = 'opacity 0.5s ease';
+            proverbMeaning.style.transition = 'opacity 0.5s ease';
+            
+            // Start the slideshow interval
+            slideshowInterval = setInterval(() => {
+                goToNextProverb();
+            }, 10000); // Change every 10 seconds
+        }
+        
+        function goToNextProverb() {
+            currentProverbIndex = (currentProverbIndex + 1) % proverbs.length;
+            displayProverb(currentProverbIndex);
+        }
+        
+        function goToPrevProverb() {
+            currentProverbIndex = (currentProverbIndex - 1 + proverbs.length) % proverbs.length;
+            displayProverb(currentProverbIndex);
+        }
+        
+        // Add event listeners for the navigation buttons
+        if (prevButton && nextButton) {
+            prevButton.addEventListener('click', () => {
+                hapticFeedback('light');
+                goToPrevProverb();
+                // Reset the interval to prevent immediate auto-advance
+                startProverbSlideshow();
+            });
+            
+            nextButton.addEventListener('click', () => {
+                hapticFeedback('light');
+                goToNextProverb();
+                // Reset the interval to prevent immediate auto-advance
+                startProverbSlideshow();
+            });
+            
+            // Add touch events for mobile
+            if ('ontouchstart' in document.documentElement) {
+                prevButton.addEventListener('touchstart', function() {
+                    this.classList.add('active');
+                });
+                
+                prevButton.addEventListener('touchend', function() {
+                    this.classList.remove('active');
+                });
+                
+                nextButton.addEventListener('touchstart', function() {
+                    this.classList.add('active');
+                });
+                
+                nextButton.addEventListener('touchend', function() {
+                    this.classList.remove('active');
+                });
+            }
+        }
+        
+        // Show the slideshow and hide it when timer is active
+        startBtn.addEventListener('click', () => {
+            proverbSlideshow.classList.add('hidden');
+        });
+        
+        continueBtn.addEventListener('click', () => {
+            proverbSlideshow.classList.remove('hidden');
+        });
+        
+        stopBtn.addEventListener('click', () => {
+            proverbSlideshow.classList.remove('hidden');
+        });
+    }
+
+    // Initialize all components
+    initIOSSteppers();
+    // initIOSPicker(); // Commented out as per original code
+    initDarkMode();
+    initProverbSlideshow(); // Initialize the proverb slideshow
+    
+    // Show slideshow by default
+    const proverbSlideshow = document.getElementById('proverbSlideshow');
+    if (proverbSlideshow) {
+        proverbSlideshow.classList.remove('hidden');
+    }
 }); 
