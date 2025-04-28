@@ -456,6 +456,21 @@
                     <span id="completionRestTime" class="font-semibold text-ios-orange dark:text-ios-orange">00:00</span>
                 </div>
             </div>
+            
+            <!-- Log Section -->
+            <div class="mb-4">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-left text-black dark:text-white font-medium">Log</h3>
+                    <button id="copyLogBtn" class="bg-ios-gray5 dark:bg-gray-700 hover:bg-ios-gray4 dark:hover:bg-gray-600 text-black dark:text-white p-2 rounded-lg transition duration-200 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                    </button>
+                </div>
+                <div id="workoutLog" class="bg-ios-gray6 dark:bg-gray-700 rounded-xl p-4 text-left font-mono text-sm whitespace-pre-wrap overflow-x-auto text-black dark:text-white">
+                </div>
+            </div>
+            
             <button id="continueBtn" class="w-full bg-ios-blue hover:bg-ios-blue/90 text-white font-semibold py-3 px-4 rounded-xl transition duration-200">Continue</button>
         </div>
     </div>

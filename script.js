@@ -60,6 +60,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const completionActiveTime = document.getElementById("completionActiveTime");
   const completionRestTime = document.getElementById("completionRestTime");
   const continueBtn = document.getElementById("continueBtn");
+  const workoutLog = document.getElementById("workoutLog");
+  const copyLogBtn = document.getElementById("copyLogBtn");
 
   // Check if device supports haptic feedback
   const canVibrate = "vibrate" in navigator;
@@ -388,6 +390,21 @@ document.addEventListener("DOMContentLoaded", () => {
       .padStart(2, "0")}`;
   }
 
+  // Get current date and time formatted
+  function getCurrentDateTime() {
+    const now = new Date();
+    return now.toLocaleString();
+  }
+
+  // Generate workout log text
+  function generateWorkoutLog(reps, totalTime, activeTime, restTime) {
+    return `${getCurrentDateTime()}
+Reps: ${reps}
+Total Time: ${totalTime}
+Total Active: ${activeTime}
+Total Rest: ${restTime}`;
+  }
+
   // Update the progress bar
   function updateProgress() {
     const percentage = ((originalTime - secondsRemaining) / originalTime) * 100;
@@ -446,6 +463,14 @@ document.addEventListener("DOMContentLoaded", () => {
           completionActiveTime.textContent = formatTime(totalActiveSeconds);
           completionRestTime.textContent = formatTime(totalRestSeconds);
           
+          // Generate and set workout log
+          workoutLog.textContent = generateWorkoutLog(
+            reps,
+            formatTime(totalSeconds),
+            formatTime(totalActiveSeconds),
+            formatTime(totalRestSeconds)
+          );
+          
           clearInterval(timer);
           completionModal.classList.remove("hidden");
           timerDisplay.classList.add("hidden");
@@ -499,9 +524,10 @@ document.addEventListener("DOMContentLoaded", () => {
       currentRep.textContent = `Rep: 0/${isInfiniteMode ? "∞" : reps}`;
     } else {
       currentRep.textContent = `Rep: ${currentRepCount}/${isInfiniteMode ? "∞" : reps}`;
+      // Only increment total seconds when not in countdown phase
+      totalSeconds++;
     }
-
-    totalSeconds++;
+    
     updateProgress();
   }
 
@@ -569,6 +595,14 @@ document.addEventListener("DOMContentLoaded", () => {
       completionActiveTime.textContent = formatTime(totalActiveSeconds);
       completionRestTime.textContent = formatTime(totalRestSeconds);
       
+      // Generate and set workout log
+      workoutLog.textContent = generateWorkoutLog(
+        currentRepCount,
+        formatTime(totalSeconds),
+        formatTime(totalActiveSeconds),
+        formatTime(totalRestSeconds)
+      );
+      
       completionModal.classList.remove("hidden");
       timerDisplay.classList.add("hidden");
       playSoundWithFallback(completeSound);
@@ -604,6 +638,40 @@ document.addEventListener("DOMContentLoaded", () => {
     timeLeft.textContent = "3";
     progressBar.className = "bg-ios-blue dark:bg-ios-blue h-2 rounded-full";
     progressBar.style.width = "0%";
+  });
+
+  // Copy workout log to clipboard
+  copyLogBtn.addEventListener("click", () => {
+    try {
+      navigator.clipboard.writeText(workoutLog.textContent).then(() => {
+        // Visual feedback for success
+        copyLogBtn.classList.add("bg-ios-green", "text-white");
+        copyLogBtn.querySelector("span").textContent = "Copied!";
+        
+        // Haptic feedback
+        hapticFeedback("medium");
+        
+        // Reset button after delay
+        setTimeout(() => {
+          copyLogBtn.classList.remove("bg-ios-green", "text-white");
+          copyLogBtn.classList.add("bg-ios-gray5", "dark:bg-gray-700");
+          copyLogBtn.querySelector("span").textContent = "Copy";
+        }, 1500);
+      });
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+      
+      // Visual feedback for failure
+      copyLogBtn.classList.add("bg-ios-red", "text-white");
+      copyLogBtn.querySelector("span").textContent = "Error!";
+      
+      // Reset button after delay
+      setTimeout(() => {
+        copyLogBtn.classList.remove("bg-ios-red", "text-white");
+        copyLogBtn.classList.add("bg-ios-gray5", "dark:bg-gray-700");
+        copyLogBtn.querySelector("span").textContent = "Copy";
+      }, 1500);
+    }
   });
 
   // Add iOS-specific quick-tap event listener
