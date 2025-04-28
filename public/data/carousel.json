@@ -1,12 +1,27 @@
 [
   {
+    "id": 4,
+    "proverb": "We’re all gonna make it, brah.",
+    "meaning": "Zyzz"
+  },
+  {
+    "id": 2,
+    "proverb": "Trespass into the domain of the gods",
+    "meaning": "Prince Vegeta, Dragon Ball Super"
+  },
+  {
+    "id": 5,
+    "proverb": "You mirin, brah?",
+    "meaning": "Zyzz"
+  },
+  {
     "id": 1,
     "proverb": "Go beyond, Plus Ultra",
     "meaning": "Boku no Hero Academia"
   },
   {
-    "id": 2,
-    "proverb": "Go beyond, Plus Ultra",
-    "meaning": "Boku no Hero Academia"
+    "id": 3,
+    "proverb": "Impossible to defeat? Don't make me laugh!",
+    "meaning": "Prince Vegeta, Dragon Ball Super"
   }
 ]
