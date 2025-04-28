@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const currentRep = document.getElementById("currentRep");
   const totalTime = document.getElementById("totalTime");
   const darkModeToggle = document.getElementById("darkModeToggle");
+  const infiniteRepsToggle = document.getElementById("infiniteRepsToggle");
   const sunIcon = document.getElementById("sunIcon");
   const moonIcon = document.getElementById("moonIcon");
   const increaseButtons = document.querySelectorAll(".increase-button");
@@ -310,6 +311,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let activeTime, restTime, reps;
   let totalActiveSeconds = 0;
   let totalRestSeconds = 0;
+  let isInfiniteMode = false;
 
   // Sound effects - try different path structures for Netlify compatibility
   function loadAudio(filename) {
@@ -404,105 +406,103 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     updateProgress();
-    currentRep.textContent = `Rep: ${currentRepCount}/${reps}`;
+    currentRep.textContent = `Rep: ${currentRepCount}/${isInfiniteMode ? "∞" : reps}`;
     totalTime.textContent = `Total: ${formatTime(totalSeconds)}`;
   }
 
   // Timer logic
   function runTimer() {
     secondsRemaining--;
-    totalSeconds++;
 
-    // Track active and rest time separately
-    if (phase === "active") {
-      totalActiveSeconds++;
-    } else if (phase === "rest") {
-      totalRestSeconds++;
-    }
-
+    // Update the display
     updateDisplay();
 
+    // Check if the current phase is complete
     if (secondsRemaining <= 0) {
+      // Handle phase transitions
       if (phase === "countdown") {
         // Start the active phase
         phase = "active";
-        countdownPhase.textContent = "ACTIVE";
-        countdownPhase.classList.remove("text-black", "dark:text-white");
-        countdownPhase.classList.add("text-ios-green", "dark:text-ios-green");
-        timeLeft.classList.remove("text-ios-blue", "dark:text-ios-blue");
-        timeLeft.classList.add("text-ios-green", "dark:text-ios-green");
-        progressBar.classList.remove("bg-ios-blue", "dark:bg-ios-blue");
-        progressBar.classList.add("bg-ios-green", "dark:bg-ios-green");
-
-        // Set seconds remaining to the active time
+        currentRepCount++;
         secondsRemaining = activeTime;
         originalTime = activeTime;
-        currentRepCount++;
+        countdownPhase.textContent = "Active";
+        countdownPhase.className =
+          "text-2xl font-bold text-ios-green dark:text-ios-green mb-2";
+        timeLeft.className =
+          "text-8xl font-bold text-ios-green dark:text-ios-green mb-6";
+        progressBar.className = "bg-ios-green dark:bg-ios-green h-2 rounded-full";
         playSoundWithFallback(beepSound);
         hapticFeedback("medium");
-        updateDisplay(); // Update display immediately after changing phase
       } else if (phase === "active") {
-        // Start the rest phase
-        phase = "rest";
-        countdownPhase.textContent = "REST";
-        countdownPhase.classList.remove(
-          "text-ios-green",
-          "dark:text-ios-green"
-        );
-        countdownPhase.classList.add("text-ios-orange", "dark:text-ios-orange");
-        timeLeft.classList.remove("text-ios-green", "dark:text-ios-green");
-        timeLeft.classList.add("text-ios-orange", "dark:text-ios-orange");
-        progressBar.classList.remove("bg-ios-green", "dark:bg-ios-green");
-        progressBar.classList.add("bg-ios-orange", "dark:bg-ios-orange");
+        // This active phase is done
+        totalActiveSeconds += activeTime;
 
-        // Set seconds remaining to the rest time
-        secondsRemaining = restTime;
-        originalTime = restTime;
-        playSoundWithFallback(beepSound);
-        hapticFeedback("medium");
-        updateDisplay(); // Update display immediately after changing phase
-      } else if (phase === "rest") {
-        if (currentRepCount < reps) {
-          // Start next active phase
-          phase = "active";
-          countdownPhase.textContent = "ACTIVE";
-          countdownPhase.classList.remove(
-            "text-ios-orange",
-            "dark:text-ios-orange"
-          );
-          countdownPhase.classList.add("text-ios-green", "dark:text-ios-green");
-          timeLeft.classList.remove("text-ios-orange", "dark:text-ios-orange");
-          timeLeft.classList.add("text-ios-green", "dark:text-ios-green");
-          progressBar.classList.remove("bg-ios-orange", "dark:bg-ios-orange");
-          progressBar.classList.add("bg-ios-green", "dark:bg-ios-green");
-
-          // Set seconds remaining to the active time
-          secondsRemaining = activeTime;
-          originalTime = activeTime;
-          currentRepCount++;
-          playSoundWithFallback(beepSound);
-          hapticFeedback("medium");
-          updateDisplay(); // Update display immediately after changing phase
-        } else {
-          // Workout complete
-          playSoundWithFallback(completeSound);
-          hapticFeedback("success");
-          stopTimer();
-
-          // Update completion modal with stats
+        // Check if this was the last rep
+        if (!isInfiniteMode && currentRepCount >= reps) {
+          // Workout complete - show completion modal
           completionReps.textContent = reps;
           completionTime.textContent = formatTime(totalSeconds);
           completionActiveTime.textContent = formatTime(totalActiveSeconds);
           completionRestTime.textContent = formatTime(totalRestSeconds);
-
-          // Show completion modal
+          
+          clearInterval(timer);
           completionModal.classList.remove("hidden");
-
+          timerDisplay.classList.add("hidden");
+          
+          playSoundWithFallback(completeSound);
+          hapticFeedback("success");
           return;
         }
+
+        // Start rest phase
+        phase = "rest";
+        secondsRemaining = restTime;
+        originalTime = restTime;
+        countdownPhase.textContent = "Rest";
+        countdownPhase.className =
+          "text-2xl font-bold text-ios-orange dark:text-ios-orange mb-2";
+        timeLeft.className =
+          "text-8xl font-bold text-ios-orange dark:text-ios-orange mb-6";
+        progressBar.className = "bg-ios-orange dark:bg-ios-orange h-2 rounded-full";
+        
+        playSoundWithFallback(beepSound);
+        hapticFeedback("medium");
+      } else if (phase === "rest") {
+        // The rest phase is done
+        totalRestSeconds += restTime;
+
+        // Start a new active phase
+        phase = "active";
+        if (!isInfiniteMode) {
+          currentRepCount++;
+        } else {
+          // For infinite mode, increment rep count in rest phase
+          currentRepCount++;
+        }
+        secondsRemaining = activeTime;
+        originalTime = activeTime;
+        countdownPhase.textContent = "Active";
+        countdownPhase.className =
+          "text-2xl font-bold text-ios-green dark:text-ios-green mb-2";
+        timeLeft.className =
+          "text-8xl font-bold text-ios-green dark:text-ios-green mb-6";
+        progressBar.className = "bg-ios-green dark:bg-ios-green h-2 rounded-full";
+        
+        playSoundWithFallback(beepSound);
+        hapticFeedback("medium");
       }
-      updateProgress();
     }
+
+    // Update progress
+    if (phase === "countdown") {
+      currentRep.textContent = `Rep: 0/${isInfiniteMode ? "∞" : reps}`;
+    } else {
+      currentRep.textContent = `Rep: ${currentRepCount}/${isInfiniteMode ? "∞" : reps}`;
+    }
+
+    totalSeconds++;
+    updateProgress();
   }
 
   // Start the timer
@@ -510,10 +510,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // Get input values
     activeTime = parseInt(activeInput.value);
     restTime = parseInt(restInput.value);
-    reps = parseInt(repsInput.value);
+    
+    if (!isInfiniteMode) {
+      reps = parseInt(repsInput.value);
+    } else {
+      reps = Infinity; // Set to infinity
+      stopBtn.textContent = "Complete"; // Change button text to Complete
+    }
 
     // Validate inputs
-    if (activeTime < 1 || restTime < 1 || reps < 1) {
+    if (activeTime < 1 || restTime < 1 || (reps < 1 && !isInfiniteMode)) {
       hapticFeedback("error");
       alert("Please enter valid values (minimum 1)");
       return;
@@ -551,8 +557,22 @@ document.addEventListener("DOMContentLoaded", () => {
   function stopTimer() {
     clearInterval(timer);
 
-    // Check if this was a normal stop (button press) or completion
-    if (!completionModal.classList.contains("hidden")) {
+    // Reset the button text if in infinite mode
+    if (isInfiniteMode) {
+      stopBtn.textContent = "Stop";
+    }
+
+    // If infinite mode, show the completion stats
+    if (isInfiniteMode && phase !== "countdown") {
+      completionReps.textContent = currentRepCount;
+      completionTime.textContent = formatTime(totalSeconds);
+      completionActiveTime.textContent = formatTime(totalActiveSeconds);
+      completionRestTime.textContent = formatTime(totalRestSeconds);
+      
+      completionModal.classList.remove("hidden");
+      timerDisplay.classList.add("hidden");
+      hapticFeedback("success");
+    } else if (!completionModal.classList.contains("hidden")) {
       // Timer completed naturally, modal is showing
       // Do not show the input form until Continue is pressed
     } else {
@@ -733,10 +753,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function initInfiniteMode() {
+    // Initialize infinite mode toggle
+    infiniteRepsToggle.addEventListener("click", () => {
+      isInfiniteMode = !isInfiniteMode;
+      hapticFeedback("medium");
+      
+      // Toggle button appearance
+      if (isInfiniteMode) {
+        infiniteRepsToggle.classList.remove("bg-ios-gray5", "dark:bg-gray-700");
+        infiniteRepsToggle.classList.add("bg-ios-blue", "text-white");
+        
+        // Disable reps input
+        document.querySelector('[data-field="reps"]').classList.add("opacity-50", "pointer-events-none");
+        repsInput.disabled = true;
+      } else {
+        infiniteRepsToggle.classList.add("bg-ios-gray5", "dark:bg-gray-700");
+        infiniteRepsToggle.classList.remove("bg-ios-blue", "text-white");
+        
+        // Enable reps input
+        document.querySelector('[data-field="reps"]').classList.remove("opacity-50", "pointer-events-none");
+        repsInput.disabled = false;
+      }
+    });
+  }
+
   // Initialize all components
   initIOSSteppers();
   // initIOSPicker(); // Commented out as per original code
   initDarkMode();
+  initInfiniteMode(); // Initialize infinite mode toggle
   initProverbSlideshow(); // Initialize the proverb slideshow
 
   // Show slideshow by default
