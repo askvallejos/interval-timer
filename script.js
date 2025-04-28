@@ -729,16 +729,17 @@ Total Rest: ${restTime}`;
   // Proverb Slideshow Functionality
   function initProverbSlideshow() {
     const proverbText = document.getElementById("proverbText");
-    const proverbMeaning = document.getElementById("proverbMeaning");
+    const proverbSource = document.getElementById("proverbSource");
     const proverbSlideshow = document.getElementById("proverbSlideshow");
 
     let proverbs = [];
     let currentProverbIndex = 0;
+    let lastProverbIndex = -1; // Track the last shown proverb index
     let slideshowInterval;
 
     // Set initial opacity to 0 for smooth fade-in
     proverbText.style.opacity = "0";
-    proverbMeaning.style.opacity = "0";
+    proverbSource.style.opacity = "0";
 
     // Attempt to load proverbs from file only
     const loadProverbs = async () => {
@@ -764,8 +765,26 @@ Total Rest: ${restTime}`;
 
     function displayRandomProverb() {
       if (proverbs.length === 0) return;
-
-      currentProverbIndex = Math.floor(Math.random() * proverbs.length);
+      
+      // If there's only one proverb, we have no choice but to display it
+      if (proverbs.length === 1) {
+        currentProverbIndex = 0;
+        displayProverb(currentProverbIndex);
+        return;
+      }
+      
+      let newIndex;
+      do {
+        // Generate a new random index
+        newIndex = Math.floor(Math.random() * proverbs.length);
+        // Repeat until we get an index different from the last shown proverb
+      } while (newIndex === lastProverbIndex);
+      
+      // Update the current and last indices
+      currentProverbIndex = newIndex;
+      lastProverbIndex = newIndex;
+      
+      // Display the selected proverb
       displayProverb(currentProverbIndex);
     }
 
@@ -776,15 +795,15 @@ Total Rest: ${restTime}`;
 
       // Add fade-out effect
       proverbText.style.opacity = "0";
-      proverbMeaning.style.opacity = "0";
+      proverbSource.style.opacity = "0";
 
       setTimeout(() => {
         proverbText.textContent = proverb.proverb;
-        proverbMeaning.textContent = proverb.meaning;
+        proverbSource.textContent = proverb.source;
 
         // Add fade-in effect
         proverbText.style.opacity = "1";
-        proverbMeaning.style.opacity = "1";
+        proverbSource.style.opacity = "1";
       }, 500);
     }
 
@@ -794,7 +813,7 @@ Total Rest: ${restTime}`;
 
       // Apply transition style for smooth opacity changes
       proverbText.style.transition = "opacity 0.5s ease";
-      proverbMeaning.style.transition = "opacity 0.5s ease";
+      proverbSource.style.transition = "opacity 0.5s ease";
 
       // Start the slideshow interval with random proverbs
       slideshowInterval = setInterval(() => {

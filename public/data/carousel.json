@@ -1,27 +1,57 @@
 [
   {
-    "id": 4,
-    "proverb": "We’re all gonna make it, brah.",
-    "meaning": "Zyzz"
+    "id": 1,
+    "proverb": "We are what we repeatedly do. Excellence, then, is not an act, but a habit.",
+    "source": "Aristotle"
   },
   {
     "id": 2,
-    "proverb": "Trespass into the domain of the gods",
-    "meaning": "Prince Vegeta, Dragon Ball Super"
-  },
-  {
-    "id": 5,
-    "proverb": "You mirin, brah?",
-    "meaning": "Zyzz"
-  },
-  {
-    "id": 1,
-    "proverb": "Go beyond, Plus Ultra!",
-    "meaning": "U.A. High School motto, Boku no Hero Academia"
+    "proverb": "Trespass into the domain of the gods!",
+    "source": "Prince Vegeta, Dragon Ball Super"
   },
   {
     "id": 3,
+    "proverb": "You mirin', brah?",
+    "source": "Zyzz"
+  },
+  {
+    "id": 4,
+    "proverb": "Go beyond, Plus Ultra!",
+    "source": "U.A. High School motto, Boku no Hero Academia"
+  },
+  {
+    "id": 5,
     "proverb": "Impossible to defeat? Don't make me laugh!",
-    "meaning": "Prince Vegeta, Dragon Ball Super"
+    "source": "Prince Vegeta, Dragon Ball Super"
+  },
+  {
+    "id": 6,
+    "proverb": "You are in danger of living a life so comfortable and soft that you will die without ever realizing your true potential.",
+    "source": "David Goggins"
+  },
+  {
+    "id": 7,
+    "proverb": "We don’t rise to the level of our expectations, we fall to the level of our training.",
+    "source": "David Goggins"
+  },
+  {
+    "id": 8,
+    "proverb": "It is a shame for a man to grow old without seeing the beauty and strength of which his body is capable.",
+    "source": "Socrates"
+  },
+  {
+    "id": 9,
+    "proverb": "My style is impetuous, my defense is impregnable",
+    "source": "Mike Tyson"
+  },
+  {
+    "id": 10,
+    "proverb": "I’m the best ever. I’m the most brutal and vicious, and most ruthless champion there’s ever been. There’s no one who can stop me. Lennox Lewis is a conqueror? No! I’m Alexander! He’s no Alexander!",
+    "source": "Mike Tyson"
+  },
+  {
+    "id": 11,
+    "proverb": "And you, George Foreman, all you chumps are gonna bow when I whoop him. All of you. I know you got him, I know you got him picked, but the man's in trouble—I'm gonna show you how great I am.",
+    "source": "Muhammad Ali"
   }
 ]
