@@ -571,6 +571,7 @@ document.addEventListener("DOMContentLoaded", () => {
       
       completionModal.classList.remove("hidden");
       timerDisplay.classList.add("hidden");
+      playSoundWithFallback(completeSound);
       hapticFeedback("success");
     } else if (!completionModal.classList.contains("hidden")) {
       // Timer completed naturally, modal is showing
