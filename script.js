@@ -1003,7 +1003,6 @@ Total Rest: ${restTime}`;
   }
 
   // Initialize all components
-  initIOSSteppers(); // Initialize iOS-style steppers
   // initIOSPicker(); // Commented out as per original code
   initDarkMode();
   initInfiniteMode(); // Initialize infinite mode toggle
