@@ -42,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const stepperInputs = [activeInput, restInput, repsInput];
   const startBtn = document.getElementById("startBtn");
   const stopBtn = document.getElementById("stopBtn");
+  const pauseBtn = document.getElementById("pauseBtn");
   const timerDisplay = document.getElementById("timerDisplay");
   const countdownPhase = document.getElementById("countdownPhase");
   const timeLeft = document.getElementById("timeLeft");
@@ -65,6 +66,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Check if device supports haptic feedback
   const canVibrate = "vibrate" in navigator;
+
+  // Check if pause button exists
+  const hasPauseButton = pauseBtn !== null;
 
   // Haptic feedback function
   function hapticFeedback(intensity) {
@@ -320,6 +324,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let totalActiveSeconds = 0;
   let totalRestSeconds = 0;
   let isInfiniteMode = false;
+  let isPaused = false;
 
   // Sound effects - try different path structures for Netlify compatibility
   function loadAudio(filename) {
@@ -579,11 +584,35 @@ Total Rest: ${restTime}`;
     totalRestSeconds = 0;
     secondsRemaining = 3; // Countdown from 3
     originalTime = 3;
+    isPaused = false;
 
     updateDisplay();
 
+    // Show pause button and reset its text (only if it exists)
+    if (hasPauseButton) {
+      pauseBtn.classList.remove("hidden");
+      pauseBtn.textContent = "Pause";
+    }
+
     // Start the timer
     timer = setInterval(runTimer, 1000);
+  }
+
+  // Pause/Resume the timer
+  function pauseResumeTimer() {
+    hapticFeedback("medium");
+    
+    if (isPaused) {
+      // Resume the timer
+      timer = setInterval(runTimer, 1000);
+      pauseBtn.textContent = "Pause";
+      isPaused = false;
+    } else {
+      // Pause the timer
+      clearInterval(timer);
+      pauseBtn.textContent = "Continue";
+      isPaused = true;
+    }
   }
 
   // Stop the timer
@@ -593,6 +622,13 @@ Total Rest: ${restTime}`;
     // Reset the button text if in infinite mode
     if (isInfiniteMode) {
       stopBtn.textContent = "Stop";
+    }
+
+    // Hide pause button and reset its text (only if it exists)
+    if (hasPauseButton) {
+      pauseBtn.classList.add("hidden");
+      pauseBtn.textContent = "Pause";
+      isPaused = false;
     }
 
     // If infinite mode, show the completion stats
@@ -629,6 +665,9 @@ Total Rest: ${restTime}`;
   // Event listeners
   startBtn.addEventListener("click", startTimer);
   stopBtn.addEventListener("click", stopTimer);
+  if (hasPauseButton) {
+    pauseBtn.addEventListener("click", pauseResumeTimer);
+  }
 
   // Continue button event listener
   continueBtn.addEventListener("click", () => {
@@ -645,6 +684,13 @@ Total Rest: ${restTime}`;
     timeLeft.textContent = "3";
     progressBar.className = "bg-ios-blue dark:bg-ios-blue h-2 rounded-full";
     progressBar.style.width = "0%";
+
+    // Ensure pause button is hidden (only if it exists)
+    if (hasPauseButton) {
+      pauseBtn.classList.add("hidden");
+      pauseBtn.textContent = "Pause";
+      isPaused = false;
+    }
   });
 
   // Copy workout log to clipboard
@@ -731,6 +777,17 @@ Total Rest: ${restTime}`;
     continueBtn.addEventListener("touchend", function () {
       this.classList.remove("active");
     });
+
+    // Add touch events for pause button (only if it exists)
+    if (hasPauseButton) {
+      pauseBtn.addEventListener("touchstart", function () {
+        this.classList.add("active");
+      });
+
+      pauseBtn.addEventListener("touchend", function () {
+        this.classList.remove("active");
+      });
+    }
   }
 
   // Proverb Slideshow Functionality
