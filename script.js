@@ -424,8 +424,8 @@ Total Rest: ${restTime}`;
       // For countdown phase, just show the number as is (3, 2, 1)
       timeLeft.textContent = secondsRemaining;
     } else if (phase === "active" || phase === "rest") {
-      // For active and rest phases, show the actual remaining time with a minimum of 1
-      timeLeft.textContent = Math.max(1, secondsRemaining);
+      // For active and rest phases, show the actual remaining time
+      timeLeft.textContent = secondsRemaining;
     }
 
     updateProgress();
@@ -435,12 +435,10 @@ Total Rest: ${restTime}`;
 
   // Timer logic
   function runTimer() {
+    // First, decrement the timer
     secondsRemaining--;
-
-    // Update the display
-    updateDisplay();
-
-    // Check if the current phase is complete
+    
+    // Check if the current phase is complete and handle transitions
     if (secondsRemaining <= 0) {
       // Handle phase transitions
       if (phase === "countdown") {
@@ -525,7 +523,10 @@ Total Rest: ${restTime}`;
       }
     }
 
-    // Update progress
+    // Update the display AFTER handling phase transitions
+    updateDisplay();
+
+    // Update progress and rep counter
     if (phase === "countdown") {
       currentRep.textContent = `Rep: 0/${isInfiniteMode ? "∞" : reps}`;
     } else {
