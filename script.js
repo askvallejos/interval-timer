@@ -95,8 +95,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function initIOSSteppers() {
     // Set max and min values for each field
     const limits = {
-      active: { min: 1, max: 300 },
-      rest: { min: 1, max: 300 },
+      active: { min: 5, max: 300 },
+      rest: { min: 5, max: 300 },
       reps: { min: 1, max: 30 },
     };
 
@@ -107,7 +107,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const input = document.getElementById(field);
         const valueEl = document.getElementById(`${field}-value`);
         const currentValue = parseInt(input.value);
-        const newValue = Math.min(currentValue + 1, limits[field].max);
+        
+        // Use different step sizes based on field type
+        const stepSize = field === 'reps' ? 1 : 5;
+        const newValue = Math.min(currentValue + stepSize, limits[field].max);
 
         if (currentValue < limits[field].max) {
           hapticFeedback("light");
@@ -132,7 +135,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const input = document.getElementById(field);
         const valueEl = document.getElementById(`${field}-value`);
         const currentValue = parseInt(input.value);
-        const newValue = Math.max(currentValue - 1, limits[field].min);
+        
+        // Use different step sizes based on field type
+        const stepSize = field === 'reps' ? 1 : 5;
+        const newValue = Math.max(currentValue - stepSize, limits[field].min);
 
         if (currentValue > limits[field].min) {
           hapticFeedback("light");
@@ -867,7 +873,6 @@ Total Rest: ${restTime}`;
   }
 
   // Initialize all components
-  initIOSSteppers();
   // initIOSPicker(); // Commented out as per original code
   initDarkMode();
   initInfiniteMode(); // Initialize infinite mode toggle
