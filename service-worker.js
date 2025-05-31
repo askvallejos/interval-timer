@@ -1,4 +1,4 @@
-const CACHE_NAME = 'interval-timer-v1.2';
+const CACHE_NAME = 'interval-timer-v1.3';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -22,11 +22,25 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         console.log('Opened cache');
-        return cache.addAll(urlsToCache.map(url => {
-          return cache.add(url).catch((error) => {
-            console.log('Failed to cache:', url, error);
+        // Cache essential resources first
+        const essentialUrls = ['/', '/index.html', '/script.js'];
+        return cache.addAll(essentialUrls)
+          .then(() => {
+            // Cache additional resources individually with error handling
+            const additionalCaching = urlsToCache
+              .filter(url => !essentialUrls.includes(url))
+              .map(url => {
+                return cache.add(url).catch((error) => {
+                  console.warn('Failed to cache:', url, error);
+                  // Don't let individual failures break the entire install
+                  return Promise.resolve();
+                });
+              });
+            return Promise.all(additionalCaching);
           });
-        }));
+      })
+      .catch((error) => {
+        console.error('Cache installation failed:', error);
       })
   );
   // Force activation of new service worker
@@ -52,11 +66,17 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', (event) => {
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
         // Cache hit - return response
         if (response) {
+          console.log('Serving from cache:', event.request.url);
           return response;
         }
         
@@ -78,11 +98,35 @@ self.addEventListener('fetch', (event) => {
             });
           
           return response;
-        }).catch(() => {
-          // Network failed, try to serve a basic offline page for HTML requests
-          if (event.request.destination === 'document') {
+        }).catch((error) => {
+          console.log('Network request failed:', event.request.url, error);
+          
+          // Network failed, try to serve appropriate offline fallbacks
+          if (event.request.destination === 'document' || 
+              event.request.headers.get('accept').includes('text/html')) {
             return caches.match('/index.html');
           }
+          
+          // For other requests, try to find a cached version
+          return caches.match(event.request.url).then((cachedResponse) => {
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+            
+            // If it's a request for sounds, try to return a cached sound file
+            if (event.request.url.includes('/sounds/')) {
+              return caches.match('/sounds/beep.mp3');
+            }
+            
+            // Return a basic network error response
+            return new Response('Offline', {
+              status: 503,
+              statusText: 'Service Unavailable',
+              headers: new Headers({
+                'Content-Type': 'text/plain'
+              })
+            });
+          });
         });
       })
   );
