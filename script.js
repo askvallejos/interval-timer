@@ -35,6 +35,62 @@ document.addEventListener("DOMContentLoaded", () => {
     { passive: false }
   );
 
+  // Audio initialization for iOS
+  let audioInitialized = false;
+  let beepSound = null;
+  let completeSound = null;
+
+  // Initialize audio context for iOS
+  function initializeAudio() {
+    if (audioInitialized) return;
+    
+    try {
+      // Create audio elements
+      beepSound = loadAudio("beep.mp3");
+      completeSound = loadAudio("complete.mp3");
+      
+      // Pre-load and prime the audio for iOS
+      const primeAudio = (audio) => {
+        if (audio) {
+          audio.load();
+          // Play and immediately pause to unlock audio on iOS
+          const playPromise = audio.play();
+          if (playPromise !== undefined) {
+            playPromise.then(() => {
+              audio.pause();
+              audio.currentTime = 0;
+            }).catch(() => {
+              // Ignore errors during priming
+            });
+          }
+        }
+      };
+      
+      primeAudio(beepSound);
+      primeAudio(completeSound);
+      
+      audioInitialized = true;
+      console.log('Audio initialized for iOS');
+    } catch (error) {
+      console.error('Failed to initialize audio:', error);
+    }
+  }
+
+  // Add user gesture listeners to initialize audio
+  const userGestureEvents = ['touchstart', 'touchend', 'mousedown', 'keydown'];
+  
+  function handleFirstUserGesture() {
+    initializeAudio();
+    // Remove listeners after first interaction
+    userGestureEvents.forEach(event => {
+      document.removeEventListener(event, handleFirstUserGesture);
+    });
+  }
+  
+  userGestureEvents.forEach(event => {
+    document.addEventListener(event, handleFirstUserGesture, { once: true });
+  });
+
   // DOM Elements
   const activeInput = document.getElementById("active");
   const restInput = document.getElementById("rest");
@@ -362,12 +418,14 @@ document.addEventListener("DOMContentLoaded", () => {
     return audio;
   }
 
-  // Load all sounds
-  const beepSound = loadAudio("beep.mp3");
-  const completeSound = loadAudio("complete.mp3");
-
   // Additional sound error handling
   function playSoundWithFallback(sound) {
+    // Check if audio is initialized and sound exists
+    if (!audioInitialized || !sound) {
+      console.log('Audio not initialized or sound not available');
+      return;
+    }
+    
     // For mobile Safari, we need to play sounds in response to a user gesture
     if (!sound.paused) {
       sound.pause();
@@ -377,16 +435,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const playPromise = sound.play();
 
     if (playPromise !== undefined) {
-      playPromise.catch((error) => {
+      playPromise.then(() => {
+        console.log('Sound played successfully');
+      }).catch((error) => {
         console.error("Error playing sound:", error);
-        // Reload and try again with user interaction context
-        sound.load();
-
-        // Create a short timeout to help with mobile browser restrictions
+        // Try to reinitialize audio and play again
+        initializeAudio();
         setTimeout(() => {
-          sound.play().catch((err) => {
-            console.error("Second attempt failed:", err);
-          });
+          if (sound && !sound.paused) {
+            sound.pause();
+            sound.currentTime = 0;
+          }
+          const retryPromise = sound.play();
+          if (retryPromise !== undefined) {
+            retryPromise.catch((err) => {
+              console.error("Retry attempt failed:", err);
+            });
+          }
         }, 100);
       });
     }
@@ -663,7 +728,13 @@ Total Rest: ${restTime}`;
   }
 
   // Event listeners
-  startBtn.addEventListener("click", startTimer);
+  startBtn.addEventListener("click", () => {
+    // Ensure audio is initialized before starting timer
+    if (!audioInitialized) {
+      initializeAudio();
+    }
+    startTimer();
+  });
   stopBtn.addEventListener("click", stopTimer);
   if (hasPauseButton) {
     pauseBtn.addEventListener("click", pauseResumeTimer);
@@ -731,9 +802,10 @@ Total Rest: ${restTime}`;
   if ("ontouchstart" in document.documentElement) {
     startBtn.addEventListener("touchstart", function () {
       this.classList.add("active");
-      // Preload sounds for mobile
-      beepSound.load();
-      completeSound.load();
+      // Initialize audio for iOS
+      if (!audioInitialized) {
+        initializeAudio();
+      }
     });
 
     startBtn.addEventListener("touchend", function () {
@@ -931,6 +1003,7 @@ Total Rest: ${restTime}`;
   }
 
   // Initialize all components
+  initIOSSteppers(); // Initialize iOS-style steppers
   // initIOSPicker(); // Commented out as per original code
   initDarkMode();
   initInfiniteMode(); // Initialize infinite mode toggle

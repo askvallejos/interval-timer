@@ -1,1 +1,33 @@
-{"name":"Interval Timer","short_name":"Timer","icons":[{"src":"/public/favicon/android-chrome-192x192.png","sizes":"192x192","type":"image/png"},{"src":"/public/favicon/android-chrome-512x512.png","sizes":"512x512","type":"image/png"}],"theme_color":"#ffffff","background_color":"#ffffff","display":"standalone"}
+{
+  "name": "Interval Timer",
+  "short_name": "Timer",
+  "description": "iOS-style interval timer for workouts",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f2f2f7",
+  "theme_color": "#007aff",
+  "orientation": "portrait",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/public/favicon/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/public/favicon/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/public/favicon/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["health", "fitness", "productivity"],
+  "lang": "en",
+  "dir": "ltr"
+}
