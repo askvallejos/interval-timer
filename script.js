@@ -499,7 +499,7 @@ Total Rest: ${restTime}`;
     }
 
     updateProgress();
-    currentRep.textContent = `Rep: ${currentRepCount}/${isInfiniteMode ? "∞" : reps}`;
+    currentRep.textContent = isInfiniteMode ? `Rep: ${currentRepCount}` : `Rep: ${currentRepCount}/${reps}`;
     totalTime.textContent = `Total: ${formatTime(totalSeconds)}`;
   }
 
@@ -519,10 +519,10 @@ Total Rest: ${restTime}`;
         originalTime = activeTime;
         countdownPhase.textContent = "Active";
         countdownPhase.className =
-          "text-2xl font-bold text-ios-green dark:text-ios-green mb-2";
+          "text-2xl font-bold text-active-color dark:text-active-color mb-2";
         timeLeft.className =
-          "text-8xl font-bold text-ios-green dark:text-ios-green mb-6";
-        progressBar.className = "bg-ios-green dark:bg-ios-green h-2 rounded-full";
+          "text-8xl font-bold text-active-color dark:text-active-color mb-6";
+        progressBar.className = "bg-active-color dark:bg-active-color h-2 rounded-full";
         playSoundWithFallback(beepSound);
         hapticFeedback("medium");
       } else if (phase === "active") {
@@ -560,10 +560,10 @@ Total Rest: ${restTime}`;
         originalTime = restTime;
         countdownPhase.textContent = "Rest";
         countdownPhase.className =
-          "text-2xl font-bold text-ios-orange dark:text-ios-orange mb-2";
+          "text-2xl font-bold text-rest-color dark:text-rest-color mb-2";
         timeLeft.className =
-          "text-8xl font-bold text-ios-orange dark:text-ios-orange mb-6";
-        progressBar.className = "bg-ios-orange dark:bg-ios-orange h-2 rounded-full";
+          "text-8xl font-bold text-rest-color dark:text-rest-color mb-6";
+        progressBar.className = "bg-rest-color dark:bg-rest-color h-2 rounded-full";
         
         playSoundWithFallback(beepSound);
         hapticFeedback("medium");
@@ -583,10 +583,10 @@ Total Rest: ${restTime}`;
         originalTime = activeTime;
         countdownPhase.textContent = "Active";
         countdownPhase.className =
-          "text-2xl font-bold text-ios-green dark:text-ios-green mb-2";
+          "text-2xl font-bold text-active-color dark:text-active-color mb-2";
         timeLeft.className =
-          "text-8xl font-bold text-ios-green dark:text-ios-green mb-6";
-        progressBar.className = "bg-ios-green dark:bg-ios-green h-2 rounded-full";
+          "text-8xl font-bold text-active-color dark:text-active-color mb-6";
+        progressBar.className = "bg-active-color dark:bg-active-color h-2 rounded-full";
         
         playSoundWithFallback(beepSound);
         hapticFeedback("medium");
@@ -598,9 +598,9 @@ Total Rest: ${restTime}`;
 
     // Update progress and rep counter
     if (phase === "countdown") {
-      currentRep.textContent = `Rep: 0/${isInfiniteMode ? "∞" : reps}`;
+      currentRep.textContent = isInfiniteMode ? "Rep: 0" : `Rep: 0/${reps}`;
     } else {
-      currentRep.textContent = `Rep: ${currentRepCount}/${isInfiniteMode ? "∞" : reps}`;
+      currentRep.textContent = isInfiniteMode ? `Rep: ${currentRepCount}` : `Rep: ${currentRepCount}/${reps}`;
       // Only increment total seconds when not in countdown phase
       totalSeconds++;
     }
@@ -640,8 +640,8 @@ Total Rest: ${restTime}`;
     countdownPhase.className =
       "text-2xl font-bold text-black dark:text-white mb-2";
     timeLeft.className =
-      "text-8xl font-bold text-ios-blue dark:text-ios-blue mb-6";
-    progressBar.className = "bg-ios-blue dark:bg-ios-blue h-2 rounded-full";
+      "text-8xl font-bold text-primary-color dark:text-primary-color mb-6";
+    progressBar.className = "bg-primary-color dark:bg-primary-color h-2 rounded-full";
 
     currentRepCount = 0;
     totalSeconds = 0;
@@ -751,9 +751,9 @@ Total Rest: ${restTime}`;
     countdownPhase.className =
       "text-2xl font-bold text-black dark:text-white mb-2";
     timeLeft.className =
-      "text-8xl font-bold text-ios-blue dark:text-ios-blue mb-6";
+      "text-8xl font-bold text-primary-color dark:text-primary-color mb-6";
     timeLeft.textContent = "3";
-    progressBar.className = "bg-ios-blue dark:bg-ios-blue h-2 rounded-full";
+    progressBar.className = "bg-primary-color dark:bg-primary-color h-2 rounded-full";
     progressBar.style.width = "0%";
 
     // Ensure pause button is hidden (only if it exists)
@@ -769,7 +769,7 @@ Total Rest: ${restTime}`;
     try {
       navigator.clipboard.writeText(workoutLog.textContent).then(() => {
         // Visual feedback for success
-        copyLogBtn.classList.add("bg-ios-green", "text-white");
+        copyLogBtn.classList.add("bg-active-color", "text-white");
         copyLogBtn.querySelector("span").textContent = "Copied!";
         
         // Haptic feedback
@@ -777,8 +777,8 @@ Total Rest: ${restTime}`;
         
         // Reset button after delay
         setTimeout(() => {
-          copyLogBtn.classList.remove("bg-ios-green", "text-white");
-          copyLogBtn.classList.add("bg-ios-gray5", "dark:bg-gray-700");
+          copyLogBtn.classList.remove("bg-active-color", "text-white");
+          copyLogBtn.classList.add("bg-surface-secondary", "dark:bg-gray-700");
           copyLogBtn.querySelector("span").textContent = "Copy";
         }, 1500);
       });
@@ -786,13 +786,13 @@ Total Rest: ${restTime}`;
       console.error("Failed to copy text: ", err);
       
       // Visual feedback for failure
-      copyLogBtn.classList.add("bg-ios-red", "text-white");
+      copyLogBtn.classList.add("bg-danger-color", "text-white");
       copyLogBtn.querySelector("span").textContent = "Error!";
       
       // Reset button after delay
       setTimeout(() => {
-        copyLogBtn.classList.remove("bg-ios-red", "text-white");
-        copyLogBtn.classList.add("bg-ios-gray5", "dark:bg-gray-700");
+        copyLogBtn.classList.remove("bg-danger-color", "text-white");
+        copyLogBtn.classList.add("bg-surface-secondary", "dark:bg-gray-700");
         copyLogBtn.querySelector("span").textContent = "Copy";
       }, 1500);
     }
@@ -985,15 +985,15 @@ Total Rest: ${restTime}`;
       
       // Toggle button appearance
       if (isInfiniteMode) {
-        infiniteRepsToggle.classList.remove("bg-ios-gray5", "dark:bg-gray-700");
-        infiniteRepsToggle.classList.add("bg-ios-blue", "text-white");
+        infiniteRepsToggle.classList.remove("bg-surface-secondary", "dark:bg-gray-700");
+        infiniteRepsToggle.classList.add("bg-primary-color", "text-white");
         
         // Disable reps input
         document.querySelector('[data-field="reps"]').classList.add("opacity-50", "pointer-events-none");
         repsInput.disabled = true;
       } else {
-        infiniteRepsToggle.classList.add("bg-ios-gray5", "dark:bg-gray-700");
-        infiniteRepsToggle.classList.remove("bg-ios-blue", "text-white");
+        infiniteRepsToggle.classList.add("bg-surface-secondary", "dark:bg-gray-700");
+        infiniteRepsToggle.classList.remove("bg-primary-color", "text-white");
         
         // Enable reps input
         document.querySelector('[data-field="reps"]').classList.remove("opacity-50", "pointer-events-none");

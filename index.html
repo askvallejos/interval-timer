@@ -35,26 +35,24 @@
                         'sf': ['-apple-system', 'BlinkMacSystemFont', 'San Francisco', 'Helvetica Neue', 'Helvetica', 'sans-serif'],
                     },
                     colors: {
-                        // iOS System Colors
-                        'ios-red': '#ff3b30',
-                        'ios-orange': '#ff9500',
-                        'ios-yellow': '#ffcc00',
-                        'ios-green': '#34c759',
-                        'ios-mint': '#00c7be',
-                        'ios-teal': '#30b0c7',
-                        'ios-cyan': '#32ade6',
-                        'ios-blue': '#007aff',
-                        'ios-indigo': '#5856d6',
-                        'ios-purple': '#af52de',
-                        'ios-pink': '#ff2d55',
-                        'ios-brown': '#a2845e',
-                        // iOS Gray Colors
-                        'ios-gray': '#8e8e93',
-                        'ios-gray2': '#aeaeb2',
-                        'ios-gray3': '#c7c7cc',
-                        'ios-gray4': '#d1d1d6',
-                        'ios-gray5': '#e5e5ea',
-                        'ios-gray6': '#f2f2f7',
+                        // Primary Colors
+                        'primary-color': '#007aff', // Primary buttons (Start, Continue), timer display, progress bars, infinite toggle active
+                        'active-color': '#34c759', // Active phase text/progress, success states, completion checkmark, active time stats
+                        'rest-color': '#ff9500', // Pause button, rest phase text/progress, rest time stats
+                        'danger-color': '#ff3b30', // Stop button, error states
+                        
+                        // Text Colors
+                        'text-secondary': '#8e8e93', // Secondary text (current rep, total time, proverb source)
+                        'text-tertiary': '#aeaeb2', // Tertiary text elements
+                        
+                        // Surface Colors
+                        'surface-primary': '#f2f2f7', // Light mode: body background, completion stats, workout log
+                        'surface-secondary': '#e5e5ea', // Light mode: toggle buttons, progress track background, copy button
+                        'button-hover': '#d1d1d6', // Light mode: button hover states
+                        
+                        // Dark mode equivalents are handled by Tailwind's dark: prefix with standard colors
+                        // Dark backgrounds: dark:bg-black, dark:bg-gray-800, dark:bg-gray-700
+                        // Dark text: dark:text-white, dark:text-gray-300
                     }
                 }
             }
@@ -206,7 +204,7 @@
             height: 56px;
             border-radius: 12px;
             overflow: hidden;
-            background-color: #f2f2f7; /* iOS gray6 */
+            background-color: #f2f2f7; /* surface-primary */
             font-size: 20px;
         }
         
@@ -222,7 +220,7 @@
             height: 56px;
             background: transparent;
             border: none;
-            color: #007aff; /* iOS blue */
+            color: #007aff; /* primary-color */
             font-size: 28px;
             font-weight: 300;
             outline: none;
@@ -238,7 +236,7 @@
         }
         
         .stepper-button:disabled {
-            color: rgba(0, 122, 255, 0.3); /* iOS blue with opacity */
+            color: rgba(0, 122, 255, 0.3); /* primary-color with opacity */
         }
         
         .stepper-divider {
@@ -321,7 +319,7 @@
             padding: 4px 8px;
             background: transparent;
             border-radius: 8px;
-            color: #007aff; /* iOS blue */
+            color: #007aff; /* primary-color */
         }
         
         .ios-picker-header button:active {
@@ -338,15 +336,15 @@
         }
     </style>
 </head>
-<body class="bg-ios-gray6 dark:bg-black min-h-screen font-sf transition-colors duration-200">
+<body class="bg-surface-primary dark:bg-black min-h-screen font-sf transition-colors duration-200">
     <div class="container mx-auto px-4 py-8 max-w-md">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-semibold text-black dark:text-white">Interval Timer</h1>
             <div class="flex gap-2">
-                <button id="infiniteRepsToggle" class="relative p-2 rounded-full bg-ios-gray5 dark:bg-gray-700 text-gray-700 dark:text-gray-300 w-12 h-12 flex items-center justify-center">
+                <button id="infiniteRepsToggle" class="relative p-2 rounded-full bg-surface-secondary dark:bg-gray-700 text-gray-700 dark:text-gray-300 w-12 h-12 flex items-center justify-center">
                     <span class="text-2xl font-semibold" style="margin-top: -3px;">∞</span>
                 </button>
-                <button id="darkModeToggle" class="relative p-2 rounded-full bg-ios-gray5 dark:bg-gray-700 text-gray-700 dark:text-gray-300 w-12 h-12 flex items-center justify-center">
+                <button id="darkModeToggle" class="relative p-2 rounded-full bg-surface-secondary dark:bg-gray-700 text-gray-700 dark:text-gray-300 w-12 h-12 flex items-center justify-center">
                     <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
@@ -401,23 +399,23 @@
                     </div>
                 </div>
                 
-                <button id="startBtn" class="w-full bg-ios-blue hover:bg-ios-blue/90 text-white font-semibold py-3 px-4 rounded-xl transition duration-200">Start Timer</button>
+                <button id="startBtn" class="w-full bg-primary-color hover:bg-primary-color/90 text-white font-semibold py-3 px-4 rounded-xl transition duration-200">Start Timer</button>
             </div>
         </div>
         
         <div id="timerDisplay" class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 text-center hidden">
             <div id="countdownPhase" class="text-2xl font-bold text-black dark:text-white mb-2">Get Ready!</div>
-            <div id="timeLeft" class="text-8xl font-bold text-ios-blue dark:text-ios-blue mb-6">3</div>
-            <div id="progress" class="w-full bg-ios-gray5 dark:bg-gray-700 rounded-full h-2 mb-6">
-                <div id="progressBar" class="bg-ios-blue dark:bg-ios-blue h-2 rounded-full" style="width: 0%"></div>
+            <div id="timeLeft" class="text-8xl font-bold text-primary-color dark:text-primary-color mb-6">3</div>
+            <div id="progress" class="w-full bg-surface-secondary dark:bg-gray-700 rounded-full h-2 mb-6">
+                <div id="progressBar" class="bg-primary-color dark:bg-primary-color h-2 rounded-full" style="width: 0%"></div>
             </div>
-            <div class="flex justify-between text-sm text-ios-gray dark:text-ios-gray2 mb-8">
+            <div class="flex justify-between text-sm text-text-secondary dark:text-text-tertiary mb-8">
                 <span id="currentRep">Rep: 0/0</span>
                 <span id="totalTime">Total: 00:00</span>
             </div>
             <div class="space-y-3">
-                <button id="pauseBtn" class="w-full bg-ios-orange hover:bg-ios-orange/90 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 hidden">Pause</button>
-                <button id="stopBtn" class="w-full bg-ios-red hover:bg-ios-red/90 text-white font-semibold py-3 px-4 rounded-xl transition duration-200">Stop</button>
+                <button id="pauseBtn" class="w-full bg-rest-color hover:bg-rest-color/90 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 hidden">Pause</button>
+                <button id="stopBtn" class="w-full bg-danger-color hover:bg-danger-color/90 text-white font-semibold py-3 px-4 rounded-xl transition duration-200">Stop</button>
             </div>
         </div>
         
@@ -426,7 +424,7 @@
             <div class="flex items-center justify-center">
                 <div class="w-full">
                     <p id="proverbText" class="text-xl font-medium text-black dark:text-white text-center mb-3"></p>
-                    <p id="proverbSource" class="text-sm text-ios-gray dark:text-ios-gray2 text-center italic"></p>
+                    <p id="proverbSource" class="text-sm text-text-secondary dark:text-text-tertiary text-center italic"></p>
                 </div>
             </div>
         </div>
@@ -451,13 +449,13 @@
     <div id="completionModal" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 backdrop-blur-sm hidden">
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 text-center max-w-md mx-4 w-full">
             <div class="mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-ios-green dark:text-ios-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-active-color dark:text-active-color" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             </div>
             <h2 class="text-2xl font-bold text-black dark:text-white mb-2">Complete</h2>
-            <p class="text-ios-gray dark:text-ios-gray2 mb-6">Nice.</p>
-            <div id="completionStats" class="bg-ios-gray6 dark:bg-gray-700 rounded-xl p-4 mb-6">
+            <p class="text-text-secondary dark:text-text-tertiary mb-6">Nice.</p>
+            <div id="completionStats" class="bg-surface-secondary dark:bg-gray-700 rounded-xl p-4 mb-6">
                 <div class="flex justify-between mb-2">
                     <span class="text-black dark:text-white">Reps:</span>
                     <span id="completionReps" class="font-semibold text-black dark:text-white">0</span>
@@ -468,11 +466,11 @@
                 </div>
                 <div class="flex justify-between mb-2">
                     <span class="text-black dark:text-white">Total Active:</span>
-                    <span id="completionActiveTime" class="font-semibold text-ios-green dark:text-ios-green">00:00</span>
+                    <span id="completionActiveTime" class="font-semibold text-active-color dark:text-active-color">00:00</span>
                 </div>
                 <div class="flex justify-between">
                     <span class="text-black dark:text-white">Total Rest:</span>
-                    <span id="completionRestTime" class="font-semibold text-ios-orange dark:text-ios-orange">00:00</span>
+                    <span id="completionRestTime" class="font-semibold text-rest-color dark:text-rest-color">00:00</span>
                 </div>
             </div>
             
@@ -480,17 +478,17 @@
             <div class="mb-4">
                 <div class="flex justify-between items-center mb-2">
                     <h3 class="text-left text-black dark:text-white font-medium">Log</h3>
-                    <button id="copyLogBtn" class="bg-ios-gray5 dark:bg-gray-700 hover:bg-ios-gray4 dark:hover:bg-gray-600 text-black dark:text-white p-2 rounded-lg transition duration-200 flex items-center">
+                    <button id="copyLogBtn" class="bg-surface-secondary dark:bg-gray-700 hover:bg-surface-secondary/90 text-black dark:text-white p-2 rounded-lg transition duration-200 flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                         </svg>
                     </button>
                 </div>
-                <div id="workoutLog" class="bg-ios-gray6 dark:bg-gray-700 rounded-xl p-4 text-left font-mono text-sm whitespace-pre-wrap overflow-x-auto text-black dark:text-white">
+                <div id="workoutLog" class="bg-surface-secondary dark:bg-gray-700 rounded-xl p-4 text-left font-mono text-sm whitespace-pre-wrap overflow-x-auto text-black dark:text-white">
                 </div>
             </div>
             
-            <button id="continueBtn" class="w-full bg-ios-blue hover:bg-ios-blue/90 text-white font-semibold py-3 px-4 rounded-xl transition duration-200">Continue</button>
+            <button id="continueBtn" class="w-full bg-primary-color hover:bg-primary-color/90 text-white font-semibold py-3 px-4 rounded-xl transition duration-200">Continue</button>
         </div>
     </div>
 
