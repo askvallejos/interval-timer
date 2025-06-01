@@ -957,20 +957,13 @@ Total Rest: ${restTime}`;
       }, 10000); // Change every 10 seconds
     }
 
-    // Show the slideshow and hide it when timer is active
-    startBtn.addEventListener("click", () => {
-      proverbSlideshow.classList.add("hidden");
-    });
-
     continueBtn.addEventListener("click", () => {
-      proverbSlideshow.classList.remove("hidden");
       // Reset the slideshow when returning to view
       displayRandomProverb();
       startProverbSlideshow();
     });
 
     stopBtn.addEventListener("click", () => {
-      proverbSlideshow.classList.remove("hidden");
       // Reset the slideshow when returning to view
       displayRandomProverb();
       startProverbSlideshow();
